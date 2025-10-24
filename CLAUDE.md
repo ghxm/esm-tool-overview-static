@@ -85,6 +85,7 @@ Tools in `_tools/` must include:
 - `layout: tool` (required)
 - `name`, `description`, `category` (required fields)
 - `pricing`, `components`, `sensor_data_types` (recommended arrays)
+- `output: false` (optional, hides tool from table and prevents detail page generation)
 
 ## Filter Configuration
 
