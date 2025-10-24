@@ -24,7 +24,7 @@ The GESIS AppKit is a flexibly deployable, sustainably maintained and continuous
 
 With an intuitive web interface and an app for Android and iOS, it enables a wide variety of surveys to be conducted. The GESIS AppKit is particularly suitable for research designs such as Experience Sampling, Ambulatory Assessment and Ecological Momentary Assessment due to the individual time control of survey schedules.
 
-## Features
+### Features
 
 - Interactive dashboard
 - Dedicated mobile app
