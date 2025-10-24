@@ -1,0 +1,60 @@
+# Site settings
+title: "ESM Tool Collection"
+description: "A comprehensive overview of ESM tools"
+baseurl: ""
+url: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Collections
+collections:
+  tools:
+    output: true
+    permalink: /tools/:name/
+
+# Table configuration
+table_columns:
+  - name: "Name"
+    field: "name"
+    sortable: true
+  - name: "Category"
+    field: "category"
+    sortable: true
+    filter: 
+      type: "select"
+      label: "Category"
+  - name: "Pricing"
+    field: "pricing"
+    sortable: true
+    filter:
+      type: "select"
+      label: "Pricing"
+  - name: "Components"
+    field: "components"
+    sortable: false
+    filter:
+      type: "multiselect-and"
+      label: "Components"
+  - name: "Sensor Data Types"
+    field: "sensor_data_types"
+    sortable: false
+    filter:
+      type: "multiselect-and"
+      label: "Sensor Types"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - vendor/
+  - README.md

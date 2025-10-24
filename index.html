@@ -1,0 +1,399 @@
+---
+layout: default
+title: "Tool Overview"
+---
+
+<div class="row">
+    <div class="col-12">
+        <!-- Page Header -->
+        <div class="mb-4">
+            <h1 class="display-4">Tool Overview</h1>
+            <p class="lead">Discover and explore ESM tools</p>
+        </div>
+
+        <!-- Search and Filter Controls -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">Search Tools</label>
+                        <input type="text" class="form-control" id="search" placeholder="Search by name, description, or maintainer...">
+                    </div>
+                    
+                    {% assign filterable_columns = site.table_columns | where_exp: "column", "column.filter" %}
+                    {% assign filter_count = filterable_columns.size %}
+                    {% assign col_size = 8 | divided_by: filter_count %}
+                    {% if col_size < 2 %}{% assign col_size = 2 %}{% endif %}
+                    
+                    {% for column in filterable_columns %}
+                        {% if column.filter.type == "select" %}
+                            <div class="col-md-{{ col_size }}">
+                                <label for="{{ column.field }}-filter" class="form-label">{{ column.filter.label }}</label>
+                                <select class="form-select filter-select" id="{{ column.field }}-filter" data-field="{{ column.field }}" data-type="select">
+                                    <option value="">All {{ column.filter.label }}</option>
+                                    {% assign field_values = site.tools | map: column.field | uniq | sort %}
+                                    {% for value in field_values %}
+                                        {% if value and value != "" %}
+                                            <option value="{{ value }}">{{ value }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% elsif column.filter.type == "multiselect-and" or column.filter.type == "multiselect-or" %}
+                            <div class="col-md-{{ col_size }}">
+                                <label class="form-label">{{ column.filter.label }}</label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="{{ column.field }}-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="filter-text">All {{ column.filter.label }}</span>
+                                    </button>
+                                    <ul class="dropdown-menu w-100" aria-labelledby="{{ column.field }}-dropdown">
+                                        <li>
+                                            <button class="dropdown-item clear-multiselect" type="button" data-field="{{ column.field }}">
+                                                <strong>Clear All</strong>
+                                            </button>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        {% assign all_values = "" | split: "," %}
+                                        {% for tool in site.tools %}
+                                            {% assign field_value = tool[column.field] %}
+                                            {% if field_value %}
+                                                {% if field_value.size > 0 %}
+                                                    {% assign all_values = all_values | concat: field_value %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% assign unique_values = all_values | uniq | sort %}
+                                        {% for value in unique_values %}
+                                            {% if value and value != "" %}
+                                                <li>
+                                                    <label class="dropdown-item" for="{{ column.field }}-{{ forloop.index }}">
+                                                        <input type="checkbox" class="form-check-input me-2 multiselect-checkbox" 
+                                                               id="{{ column.field }}-{{ forloop.index }}" 
+                                                               data-field="{{ column.field }}" 
+                                                               data-value="{{ value }}"
+                                                               data-type="{{ column.filter.type }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-filters">
+                            Clear Filters
+                        </button>
+                        <span class="text-muted ms-3">
+                            Showing <span id="tool-count">0</span> tools
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tools Table -->
+        <div class="card" id="tools-table">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                {% for column in site.table_columns %}
+                                <th {% if column.sortable %}class="sort" data-sort="{{ column.field }}"{% endif %}>
+                                    {{ column.name }}
+                                </th>
+                                {% endfor %}
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                            {% for tool in site.tools %}
+                                <tr class="tool-row" data-tool="{{ tool.slug }}">
+                                    {% for column in site.table_columns %}
+                                        <td class="{{ column.field }}">
+                                            {% assign value = tool[column.field] %}
+                                            {% if column.field == 'name' and value %}
+                                                <strong>{{ value }}</strong>
+                                            {% elsif column.field == 'sensor_data_types' and value and value.size > 0 %}
+                                                {{ value | join: ", " }}
+                                            {% elsif column.field == 'components' and value and value.size > 0 %}
+                                                {{ value | join: ", " }}
+                                            {% elsif value %}
+                                                {{ value }}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ tool.url }}" class="btn btn-sm btn-outline-primary">
+                                                View
+                                            </a>
+                                            {% if tool.link %}
+                                                <a href="{{ tool.link }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                                    ↗
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- No results message -->
+                <div id="no-results" class="text-center py-5" style="display: none;">
+                    <h5 class="text-muted">No tools found</h5>
+                    <p class="text-muted">Try adjusting your search criteria or filters.</p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize List.js for table functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the list
+    var options = {
+        valueNames: [
+            {% for column in site.table_columns %}'{{ column.field }}'{% unless forloop.last %},{% endunless %}{% endfor %}
+        ],
+        listClass: 'list'
+    };
+    
+    var toolsList = new List('tools-table', options);
+    
+    // Update tool count
+    function updateToolCount() {
+        var visibleCount = 0;
+        document.querySelectorAll('.tool-row').forEach(function(row) {
+            if (row.style.display !== 'none') {
+                visibleCount++;
+            }
+        });
+        document.getElementById('tool-count').textContent = visibleCount;
+    }
+    
+    // Initial count
+    updateToolCount();
+    
+    // Update count on search/filter
+    toolsList.on('updated', updateToolCount);
+    
+    // Connect custom search to List.js
+    document.getElementById('search').addEventListener('keyup', function() {
+        toolsList.search(this.value);
+    });
+    
+    // Dynamic filter functionality
+    document.querySelectorAll('.filter-select').forEach(function(filterElement) {
+        filterElement.addEventListener('change', function() {
+            applyFilters();
+        });
+    });
+    
+    // Multiselect checkbox functionality
+    document.querySelectorAll('.multiselect-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            updateMultiselectDisplay(this.dataset.field);
+            applyFilters();
+        });
+    });
+    
+    // Clear multiselect functionality
+    document.querySelectorAll('.clear-multiselect').forEach(function(clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            var field = this.dataset.field;
+            document.querySelectorAll(`[data-field="${field}"].multiselect-checkbox`).forEach(function(checkbox) {
+                checkbox.checked = false;
+            });
+            updateMultiselectDisplay(field);
+            applyFilters();
+        });
+    });
+    
+    // Update multiselect display text
+    function updateMultiselectDisplay(field) {
+        var selectedValues = [];
+        document.querySelectorAll(`[data-field="${field}"].multiselect-checkbox:checked`).forEach(function(checkbox) {
+            selectedValues.push(checkbox.dataset.value);
+        });
+        
+        var displayText;
+        if (selectedValues.length === 0) {
+            displayText = `All ${field.charAt(0).toUpperCase() + field.slice(1)}`;
+        } else if (selectedValues.length === 1) {
+            displayText = selectedValues[0];
+        } else {
+            displayText = `${selectedValues.length} selected`;
+        }
+        
+        var button = document.querySelector(`#${field}-dropdown .filter-text`);
+        if (button) {
+            button.textContent = displayText;
+        }
+    }
+    
+    // Combined filter function
+    function applyFilters() {
+        var activeFilters = {};
+        
+        // Collect single-select filters
+        document.querySelectorAll('.filter-select').forEach(function(filterElement) {
+            var field = filterElement.dataset.field;
+            var type = filterElement.dataset.type;
+            var value = filterElement.value;
+            
+            if (value !== '') {
+                activeFilters[field] = {
+                    values: [value],
+                    type: type
+                };
+            }
+        });
+        
+        // Collect multiselect filters
+        var multiselectFields = {};
+        document.querySelectorAll('.multiselect-checkbox:checked').forEach(function(checkbox) {
+            var field = checkbox.dataset.field;
+            var value = checkbox.dataset.value;
+            var type = checkbox.dataset.type;
+            
+            if (!multiselectFields[field]) {
+                multiselectFields[field] = {
+                    values: [],
+                    type: type
+                };
+            }
+            multiselectFields[field].values.push(value);
+        });
+        
+        // Add multiselect filters to activeFilters
+        Object.keys(multiselectFields).forEach(function(field) {
+            activeFilters[field] = multiselectFields[field];
+        });
+        
+        // If no filters are active, show all items
+        if (Object.keys(activeFilters).length === 0) {
+            document.querySelectorAll('.tool-row').forEach(function(row) {
+                row.style.display = '';
+            });
+            document.getElementById('no-results').style.display = 'none';
+            updateToolCount();
+            return;
+        }
+        
+        var matchingCount = 0;
+        
+        // Manually check each row instead of using List.js filter
+        document.querySelectorAll('.tool-row').forEach(function(row) {
+            var allMatch = true;
+            
+            // Check each active filter
+            Object.keys(activeFilters).forEach(function(field) {
+                var filter = activeFilters[field];
+                var cell = row.querySelector('.' + field);
+                var itemValue = cell ? cell.textContent.trim() : '';
+                var itemValues = itemValue.split(',').map(v => v.trim());
+                var match = false;
+                
+                if (filter.type === 'select') {
+                    // Exact match for single-value fields
+                    match = itemValue === filter.values[0].trim();
+                } else if (filter.type === 'multiselect-or') {
+                    // OR logic: Check if ANY of the selected values exist in the item
+                    match = filter.values.some(function(filterValue) {
+                        return itemValues.includes(filterValue.trim());
+                    });
+                } else if (filter.type === 'multiselect-and') {
+                    // AND logic: Check if ALL of the selected values exist in the item
+                    match = filter.values.every(function(filterValue) {
+                        return itemValues.includes(filterValue.trim());
+                    });
+                }
+                
+                if (!match) {
+                    allMatch = false;
+                }
+            });
+            
+            // Show/hide row based on match
+            if (allMatch) {
+                row.style.display = '';
+                matchingCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Show/hide no results message and update count
+        if (matchingCount === 0) {
+            document.getElementById('no-results').style.display = 'block';
+        } else {
+            document.getElementById('no-results').style.display = 'none';
+        }
+        
+        document.getElementById('tool-count').textContent = matchingCount;
+    }
+    
+    // Page length functionality removed since page-length element doesn't exist
+    
+    // Clear filters
+    document.getElementById('clear-filters').addEventListener('click', function() {
+        document.getElementById('search').value = '';
+        
+        // Clear all single-select filters
+        document.querySelectorAll('.filter-select').forEach(function(filterElement) {
+            filterElement.value = '';
+        });
+        
+        // Clear all multiselect checkboxes
+        document.querySelectorAll('.multiselect-checkbox').forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+        
+        // Update multiselect display texts
+        var fields = new Set();
+        document.querySelectorAll('.multiselect-checkbox').forEach(function(checkbox) {
+            fields.add(checkbox.dataset.field);
+        });
+        fields.forEach(function(field) {
+            updateMultiselectDisplay(field);
+        });
+        
+        // Reset row visibility and hide no-results message
+        document.querySelectorAll('.tool-row').forEach(function(row) {
+            row.style.display = '';
+        });
+        document.getElementById('no-results').style.display = 'none';
+        
+        toolsList.search('');
+        toolsList.filter();
+        updateToolCount();
+    });
+    
+    // Row click functionality using event delegation
+    document.getElementById('tools-table').addEventListener('click', function(e) {
+        var row = e.target.closest('.tool-row');
+        if (row && e.target.tagName.toLowerCase() !== 'a' && !e.target.closest('a')) {
+            var toolSlug = row.dataset.tool;
+            window.location.href = '/tools/' + toolSlug + '/';
+        }
+    });
+    
+    // Add hover effect to all rows
+    document.querySelectorAll('.tool-row').forEach(function(row) {
+        row.style.cursor = 'pointer';
+    });
+    
+});
+</script>
