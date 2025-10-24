@@ -2,6 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+
 ## Development Commands
 
 **Start development server:**
@@ -109,3 +110,11 @@ Filter types:
 **JavaScript errors:** Ensure all referenced DOM elements exist. The code expects specific IDs like `tools-table`, `no-results`, `clear-filters`.
 
 **Build failures:** Usually related to YAML syntax errors in tool frontmatter. Use `bundle exec jekyll doctor` to check for issues.
+
+## GitHub Pages Deployment
+
+The site is configured for deployment at `https://ghxm.github.io/esm-tool-overview-static/`:
+
+- `baseurl: "/esm-tool-overview-static"` in `_config.yml`
+- JavaScript links use `{{ site.baseurl }}` for proper routing
+- View buttons use `{{ tool.url | relative_url }}` filter

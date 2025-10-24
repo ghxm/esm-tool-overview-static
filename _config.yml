@@ -1,8 +1,8 @@
 # Site settings
 title: "ESM Tool Collection"
 description: "A comprehensive overview of ESM tools"
-baseurl: ""
-url: ""
+baseurl: "/esm-tool-overview-static"
+url: "https://ghxm.github.io"
 
 # Build settings
 markdown: kramdown
