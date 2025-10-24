@@ -2,6 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Always keep the information in this file up to date.
 
 ## Development Commands
 
