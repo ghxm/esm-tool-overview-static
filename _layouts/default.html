@@ -46,5 +46,16 @@
     
     <!-- Custom JS -->
     <script src="{{ '/assets/js/table.js' | relative_url }}"></script>
+    
+    <!-- Initialize Bootstrap tooltips -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
 </body>
 </html>

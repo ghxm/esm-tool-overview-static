@@ -87,6 +87,18 @@ Tools in `_tools/` must include:
 - `pricing`, `components`, `sensor_data_types` (recommended arrays)
 - `output: false` (optional, hides tool from table and prevents detail page generation)
 
+## Tooltips
+
+Field tooltips can be configured in `_config.yml` under `field_tooltips`. These appear as question mark icons next to field labels in the tool detail sidebar:
+
+```yaml
+field_tooltips:
+  pricing: "The cost model for using this tool"
+  components: "The main parts or modules that make up this tool"
+```
+
+Tooltips work on both desktop (hover) and mobile (tap) using Bootstrap's tooltip component.
+
 ## Filter Configuration
 
 Add new filters by updating `_config.yml`:

@@ -47,6 +47,13 @@ table_columns:
       type: "multiselect-and"
       label: "Sensor Types"
 
+# Tooltips for tool information sidebar
+field_tooltips:
+  pricing: "The cost model for using this tool"
+  components: "The main parts or modules that make up this tool"
+  sensor_data_types: "Types of sensor data this tool can collect"
+  license: "The software license under which this tool is distributed"
+
 # Exclude from processing
 exclude:
   - Gemfile

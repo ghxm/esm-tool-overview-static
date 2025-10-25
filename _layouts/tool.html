@@ -53,12 +53,30 @@ layout: default
             <div class="card-body">
                 <dl class="row">
                     {% if page.pricing %}
-                        <dt class="col-sm-4">Pricing:</dt>
+                        <dt class="col-sm-4">
+                            Pricing:
+                            {% if site.field_tooltips.pricing %}
+                                <i class="fas fa-question-circle text-muted ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-trigger="hover focus"
+                                   title="{{ site.field_tooltips.pricing }}"></i>
+                            {% endif %}
+                        </dt>
                         <dd class="col-sm-8">{{ page.pricing }}</dd>
                     {% endif %}
 
                     {% if page.components and page.components.size > 0 %}
-                        <dt class="col-sm-4">Components:</dt>
+                        <dt class="col-sm-4">
+                            Components:
+                            {% if site.field_tooltips.components %}
+                                <i class="fas fa-question-circle text-muted ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-trigger="hover focus"
+                                   title="{{ site.field_tooltips.components }}"></i>
+                            {% endif %}
+                        </dt>
                         <dd class="col-sm-8">
                             {% for component in page.components %}
                                 <span class="badge bg-success me-1">{{ component }}</span>
@@ -67,7 +85,16 @@ layout: default
                     {% endif %}
 
                     {% if page.sensor_data_types and page.sensor_data_types.size > 0 %}
-                        <dt class="col-sm-4">Sensor Data Types:</dt>
+                        <dt class="col-sm-4">
+                            Sensor Data Types:
+                            {% if site.field_tooltips.sensor_data_types %}
+                                <i class="fas fa-question-circle text-muted ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-trigger="hover focus"
+                                   title="{{ site.field_tooltips.sensor_data_types }}"></i>
+                            {% endif %}
+                        </dt>
                         <dd class="col-sm-8">
                             {% for sensor_type in page.sensor_data_types %}
                                 <span class="badge bg-info me-1">{{ sensor_type }}</span>
@@ -76,12 +103,30 @@ layout: default
                     {% endif %}
 
                     {% if page.maintainer %}
-                        <dt class="col-sm-4">Maintainer:</dt>
+                        <dt class="col-sm-4">
+                            Maintainer:
+                            {% if site.field_tooltips.maintainer %}
+                                <i class="fas fa-question-circle text-muted ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-trigger="hover focus"
+                                   title="{{ site.field_tooltips.maintainer }}"></i>
+                            {% endif %}
+                        </dt>
                         <dd class="col-sm-8">{{ page.maintainer }}</dd>
                     {% endif %}
 
                     {% if page.license %}
-                        <dt class="col-sm-4">License:</dt>
+                        <dt class="col-sm-4">
+                            License:
+                            {% if site.field_tooltips.license %}
+                                <i class="fas fa-question-circle text-muted ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-trigger="hover focus"
+                                   title="{{ site.field_tooltips.license }}"></i>
+                            {% endif %}
+                        </dt>
                         <dd class="col-sm-8">{{ page.license }}</dd>
                     {% endif %}
 
