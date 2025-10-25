@@ -28,7 +28,16 @@ title: "Tool Overview"
                     {% for column in filterable_columns %}
                         {% if column.filter.type == "select" %}
                             <div class="col-md-{{ col_size }}">
-                                <label for="{{ column.field }}-filter" class="form-label">{{ column.filter.label }}</label>
+                                <label for="{{ column.field }}-filter" class="form-label">
+                                    {{ column.filter.label }}
+                                    {% if site.field_tooltips[column.field] %}
+                                        <i class="fas fa-question-circle text-muted ms-1" 
+                                           data-bs-toggle="tooltip" 
+                                           data-bs-placement="top" 
+                                           data-bs-trigger="hover focus"
+                                           title="{{ site.field_tooltips[column.field] }}"></i>
+                                    {% endif %}
+                                </label>
                                 <select class="form-select filter-select" id="{{ column.field }}-filter" data-field="{{ column.field }}" data-type="select">
                                     <option value="">All {{ column.filter.label }}</option>
                                     {% assign field_values = site.tools | map: column.field | uniq | sort %}
@@ -41,7 +50,16 @@ title: "Tool Overview"
                             </div>
                         {% elsif column.filter.type == "multiselect-and" or column.filter.type == "multiselect-or" %}
                             <div class="col-md-{{ col_size }}">
-                                <label class="form-label">{{ column.filter.label }}</label>
+                                <label class="form-label">
+                                    {{ column.filter.label }}
+                                    {% if site.field_tooltips[column.field] %}
+                                        <i class="fas fa-question-circle text-muted ms-1" 
+                                           data-bs-toggle="tooltip" 
+                                           data-bs-placement="top" 
+                                           data-bs-trigger="hover focus"
+                                           title="{{ site.field_tooltips[column.field] }}"></i>
+                                    {% endif %}
+                                </label>
                                 <div class="dropdown">
                                     <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="{{ column.field }}-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="filter-text">All {{ column.filter.label }}</span>
