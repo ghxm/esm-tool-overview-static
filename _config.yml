@@ -16,44 +16,7 @@ collections:
   tools:
     output: true
     permalink: /tools/:name/
-
-# Table configuration
-table_columns:
-  - name: "Name"
-    field: "name"
-    sortable: true
-  - name: "Category"
-    field: "category"
-    sortable: true
-    filter: 
-      type: "select"
-      label: "Category"
-  - name: "Pricing"
-    field: "pricing"
-    sortable: true
-    filter:
-      type: "select"
-      label: "Pricing"
-  - name: "Components"
-    field: "components"
-    sortable: false
-    filter:
-      type: "multiselect-and"
-      label: "Components"
-  - name: "Sensor Data Types"
-    field: "sensor_data_types"
-    sortable: false
-    filter:
-      type: "multiselect-and"
-      label: "Sensor Types"
-
-# Tooltips for tool information sidebar
-field_tooltips:
-  pricing: "The cost model for using this tool"
-  components: "The main parts or modules that make up this tool"
-  sensor_data_types: "Types of sensor data this tool can collect"
-  license: "The software license under which this tool is distributed"
-
+  
 # Exclude from processing
 exclude:
   - Gemfile
@@ -65,3 +28,149 @@ exclude:
   - vendor/ruby/
   - vendor/
   - README.md
+    
+    
+# CONFIGURATION FOR TOOL OVERVIEW
+    
+# Default empty value for fields (can be overridden per field)
+default_empty_value: "-"
+
+# Tool information sections for detail page
+detail_info_sections:
+  - name: "Basic Information"
+    fields: ["category", "pricing"]
+  - name: "Technical Details" 
+    fields: ["components", "sensor_data_types"]
+  - name: "Metadata"
+    fields: ["license", "last_updated"]
+
+
+# Unified field configuration
+fields:
+  name:
+    label: "Name"
+    type: "string"
+    display: ["table", "detail_overview"]
+    sortable: true
+    show_if_empty: true
+    empty_value: "-"
+    
+  description:
+    label: "Description"
+    type: "string"
+    display: []
+    sortable: false
+    show_if_empty: false
+    
+  category:
+    label: "Category"
+    type: "category"
+    display_style: "badge"
+    display: ["table", "detail_info"]
+    sortable: true
+    show_if_empty: false
+    filter:
+      display: true
+      type: "select"
+      label: "Category"
+    tooltip: "The category or type of tool (Platform, Library, Framework, etc.)"
+    
+  pricing:
+    label: "Pricing"
+    type: "category"
+    display_style: "badge"
+    display: ["table", "detail_info"]
+    sortable: true
+    show_if_empty: false
+    filter:
+      display: true
+      type: "select"
+      label: "Pricing"
+    tooltip: "The cost model for using this tool (Free, Commercial, Freemium, etc.)"
+    
+  components:
+    label: "Components"
+    type: "array"
+    display: ["table", "detail_info"]
+    sortable: false
+    show_if_empty: false
+    filter:
+      display: true
+      type: "multiselect-and"
+      label: "Components"
+    tooltip: "The main parts or modules that make up this tool"
+    
+  sensor_data_types:
+    label: "Sensor Data Types"
+    type: "array"
+    display: ["table", "detail_info"]
+    sortable: false
+    show_if_empty: false
+    filter:
+      display: true
+      type: "multiselect-and"
+      label: "Sensor Types"
+    tooltip: "Types of sensor data this tool can collect or process"
+    
+  maintainer:
+    label: "Maintainer"
+    type: "string"
+    display: ["detail_overview"]
+    sortable: true
+    show_if_empty: false
+    filter:
+      display: false
+    tooltip: "The organization or person responsible for maintaining this tool"
+    
+  license:
+    label: "License"
+    type: "string"
+    display: ["detail_info"]
+    sortable: true
+    show_if_empty: false
+    filter:
+      display: false
+    tooltip: "The software license under which this tool is distributed"
+    
+  link:
+    label: "Website"
+    type: "url"
+    display: ["detail_overview"]
+    show_if_empty: false
+    filter:
+      display: false
+    
+  last_updated:
+    label: "Last Updated"
+    type: "date"
+    display: ["detail_info"]
+    show_if_empty: false
+    filter:
+      display: false
+    
+  tags:
+    label: "Tags"
+    type: "array"
+    display: ["detail_info"]
+    show_if_empty: false
+    filter:
+      display: false
+      
+  publication_url:
+    label: "Publication"
+    type: "url"
+    display: []
+    show_if_empty: false
+    filter:
+      display: false
+    tooltip: "Link to related research publication or documentation"
+    
+  publication_citation:
+    label: "Citation"
+    type: "string"
+    display: ["detail_publication"]
+    show_if_empty: false
+    filter:
+      display: false
+    tooltip: "Bibliographical reference for this tool's publication"
+

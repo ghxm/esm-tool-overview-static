@@ -2,35 +2,147 @@
 layout: default
 ---
 
+<!-- Tool Header - Always on top -->
 <div class="row">
-    <div class="col-lg-8">
-        <!-- Tool Header -->
-        <div class="d-flex justify-content-between align-items-start mb-4">
-            <div>
-                <h1 class="display-5">{{ page.name | default: page.title }}</h1>
-                {% if page.category %}
-                    <span class="badge bg-primary fs-6 mb-3">{{ page.category }}</span>
-                {% endif %}
-            </div>
-            {% if page.link %}
-                <a href="{{ page.link }}" target="_blank" class="btn btn-outline-primary">
-                    Visit Tool ↗
-                </a>
+    <div class="col-12">
+        <!-- Mobile Back Button -->
+        <div class="d-lg-none mb-3">
+            <a href="{{ '/' | relative_url }}" class="btn btn-outline-secondary btn-sm">
+                ← Back to Overview
+            </a>
+        </div>
+        
+        <div class="mb-4">
+            <h1 class="display-5">{{ page.name | default: page.title }}</h1>
+            {% if page.description %}
+                <p class="lead">{{ page.description }}</p>
             {% endif %}
         </div>
+    </div>
+</div>
 
-        <!-- Description -->
-        {% if page.description %}
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Description</h5>
-                    <p class="card-text">{{ page.description }}</p>
-                </div>
+<div class="row">
+    <div class="col-lg-8 order-lg-1 order-2">
+        <!-- Tool Information - Front and Center -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Tool Information</h5>
             </div>
-        {% endif %}
+            <div class="card-body">
+                {% for section in site.detail_info_sections %}
+                    <h6 class="mt-3 mb-2">{{ section.name }}</h6>
+                    <dl class="row">
+                        {% for field_name in section.fields %}
+                            {% assign field_config = site.fields[field_name] %}
+                            {% if field_config.display contains "detail_info" %}
+                                {% assign value = page[field_name] %}
+                                {% if value or field_config.show_if_empty %}
+                                    <dt class="col-sm-3">
+                                        {{ field_config.label }}:
+                                        {% if field_config.tooltip %}
+                                            <i class="fas fa-question-circle text-muted ms-1" 
+                                               data-bs-toggle="tooltip" 
+                                               data-bs-placement="top" 
+                                               data-bs-trigger="hover focus"
+                                               title="{{ field_config.tooltip }}"></i>
+                                        {% endif %}
+                                    </dt>
+                                    <dd class="col-sm-9">
+                                        {% if field_config.type == 'array' and value and value.size > 0 %}
+                                            {% for item in value %}
+                                                {% if field_name == 'components' %}
+                                                    <span class="badge bg-success me-1">{{ item }}</span>
+                                                {% elsif field_name == 'sensor_data_types' %}
+                                                    <span class="badge bg-info me-1">{{ item }}</span>
+                                                {% elsif field_name == 'tags' %}
+                                                    <span class="badge bg-secondary me-1">{{ item }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-primary me-1">{{ item }}</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% elsif field_config.type == 'date' and value %}
+                                            {{ value | date: "%B %d, %Y" }}
+                                        {% elsif field_config.display_style == 'badge' and value %}
+                                            <span class="badge bg-primary">{{ value }}</span>
+                                        {% elsif value %}
+                                            {{ value }}
+                                        {% elsif field_config.show_if_empty %}
+                                            <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
+                                        {% endif %}
+                                    </dd>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </dl>
+                {% endfor %}
+                
+                <!-- Automatic "Other" section for uncategorized detail_info fields -->
+                {% assign all_section_fields = "" | split: "," %}
+                {% for section in site.detail_info_sections %}
+                    {% assign all_section_fields = all_section_fields | concat: section.fields %}
+                {% endfor %}
+                
+                {% assign other_fields = "" | split: "," %}
+                {% for field in site.fields %}
+                    {% assign field_name = field[0] %}
+                    {% assign field_config = field[1] %}
+                    {% if field_config.display contains "detail_info" %}
+                        {% unless all_section_fields contains field_name %}
+                            {% assign other_fields = other_fields | push: field_name %}
+                        {% endunless %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if other_fields.size > 0 %}
+                    <h6 class="mt-3 mb-2">Other</h6>
+                    <dl class="row">
+                        {% for field_name in other_fields %}
+                            {% assign field_config = site.fields[field_name] %}
+                            {% assign value = page[field_name] %}
+                            {% if value or field_config.show_if_empty %}
+                                <dt class="col-sm-3">
+                                    {{ field_config.label }}:
+                                    {% if field_config.tooltip %}
+                                        <i class="fas fa-question-circle text-muted ms-1" 
+                                           data-bs-toggle="tooltip" 
+                                           data-bs-placement="top" 
+                                           data-bs-trigger="hover focus"
+                                           title="{{ field_config.tooltip }}"></i>
+                                    {% endif %}
+                                </dt>
+                                <dd class="col-sm-9">
+                                    {% if field_config.type == 'array' and value and value.size > 0 %}
+                                        {% for item in value %}
+                                            {% if field_name == 'components' %}
+                                                <span class="badge bg-success me-1">{{ item }}</span>
+                                            {% elsif field_name == 'sensor_data_types' %}
+                                                <span class="badge bg-info me-1">{{ item }}</span>
+                                            {% elsif field_name == 'tags' %}
+                                                <span class="badge bg-secondary me-1">{{ item }}</span>
+                                            {% else %}
+                                                <span class="badge bg-primary me-1">{{ item }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% elsif field_config.type == 'date' and value %}
+                                        {{ value | date: "%B %d, %Y" }}
+                                    {% elsif field_config.display_style == 'badge' and value %}
+                                        <span class="badge bg-primary">{{ value }}</span>
+                                    {% elsif value %}
+                                        {{ value }}
+                                    {% elsif field_config.show_if_empty %}
+                                        <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
+                                    {% endif %}
+                                </dd>
+                            {% endif %}
+                        {% endfor %}
+                    </dl>
+                {% endif %}
+            </div>
+        </div>
 
         <!-- Content -->
-        {% if content and content != empty %}
+        {% assign content_stripped = content | strip %}
+        {% if content_stripped and content_stripped != "" %}
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Details</h5>
@@ -42,113 +154,107 @@ layout: default
         {% endif %}
     </div>
 
-    <div class="col-lg-4">
-        <!-- Tool Information Sidebar -->
-        <div class="card">
+    <div class="col-lg-4 order-lg-2 order-1">
+        <!-- Overview Table -->
+        <div class="card mb-4">
             <div class="card-header">
-                <h5 class="card-title mb-0">
-                    Tool Information
-                </h5>
+                <h5 class="card-title mb-0">Overview</h5>
             </div>
             <div class="card-body">
                 <dl class="row">
-                    {% if page.pricing %}
-                        <dt class="col-sm-4">
-                            Pricing:
-                            {% if site.field_tooltips.pricing %}
-                                <i class="fas fa-question-circle text-muted ms-1" 
-                                   data-bs-toggle="tooltip" 
-                                   data-bs-placement="top" 
-                                   data-bs-trigger="hover focus"
-                                   title="{{ site.field_tooltips.pricing }}"></i>
+                    {% for field in site.fields %}
+                        {% assign field_name = field[0] %}
+                        {% assign field_config = field[1] %}
+                        {% if field_config.display contains "detail_overview" %}
+                            {% assign value = page[field_name] %}
+                            {% if value or field_config.show_if_empty %}
+                                <dt class="col-sm-4">
+                                    {{ field_config.label }}:
+                                    {% if field_config.tooltip %}
+                                        <i class="fas fa-question-circle text-muted ms-1" 
+                                           data-bs-toggle="tooltip" 
+                                           data-bs-placement="top" 
+                                           data-bs-trigger="hover focus"
+                                           title="{{ field_config.tooltip }}"></i>
+                                    {% endif %}
+                                </dt>
+                                <dd class="col-sm-8">
+                                    {% if field_name == 'name' and value %}
+                                        <strong>{{ value }}</strong>
+                                    {% elsif field_name == 'link' and value %}
+                                        {% assign url_parts = value | split: '/' %}
+                                        {% assign domain = url_parts[2] %}
+                                        {% if url_parts.size > 4 %}
+                                            {% assign short_url = domain | append: '/' | append: url_parts[3] | append: '/...' %}
+                                        {% else %}
+                                            {% assign short_url = value | remove: 'https://' | remove: 'http://' %}
+                                        {% endif %}
+                                        <a href="{{ value }}" target="_blank" class="text-break">{{ short_url }}</a>
+                                    {% elsif field_name == 'publication_url' and value %}
+                                        {% assign url_parts = value | split: '/' %}
+                                        {% assign domain = url_parts[2] %}
+                                        {% if url_parts.size > 4 %}
+                                            {% assign short_url = domain | append: '/' | append: url_parts[3] | append: '/...' %}
+                                        {% else %}
+                                            {% assign short_url = value | remove: 'https://' | remove: 'http://' %}
+                                        {% endif %}
+                                        <a href="{{ value }}" target="_blank" class="text-break">{{ short_url }}</a>
+                                    {% elsif field_config.display_style == 'badge' and value %}
+                                        <span class="badge bg-primary">{{ value }}</span>
+                                    {% elsif value %}
+                                        {{ value }}
+                                    {% elsif field_config.show_if_empty %}
+                                        <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
+                                    {% endif %}
+                                </dd>
                             {% endif %}
-                        </dt>
-                        <dd class="col-sm-8">{{ page.pricing }}</dd>
-                    {% endif %}
-
-                    {% if page.components and page.components.size > 0 %}
-                        <dt class="col-sm-4">
-                            Components:
-                            {% if site.field_tooltips.components %}
-                                <i class="fas fa-question-circle text-muted ms-1" 
-                                   data-bs-toggle="tooltip" 
-                                   data-bs-placement="top" 
-                                   data-bs-trigger="hover focus"
-                                   title="{{ site.field_tooltips.components }}"></i>
-                            {% endif %}
-                        </dt>
-                        <dd class="col-sm-8">
-                            {% for component in page.components %}
-                                <span class="badge bg-success me-1">{{ component }}</span>
-                            {% endfor %}
-                        </dd>
-                    {% endif %}
-
-                    {% if page.sensor_data_types and page.sensor_data_types.size > 0 %}
-                        <dt class="col-sm-4">
-                            Sensor Data Types:
-                            {% if site.field_tooltips.sensor_data_types %}
-                                <i class="fas fa-question-circle text-muted ms-1" 
-                                   data-bs-toggle="tooltip" 
-                                   data-bs-placement="top" 
-                                   data-bs-trigger="hover focus"
-                                   title="{{ site.field_tooltips.sensor_data_types }}"></i>
-                            {% endif %}
-                        </dt>
-                        <dd class="col-sm-8">
-                            {% for sensor_type in page.sensor_data_types %}
-                                <span class="badge bg-info me-1">{{ sensor_type }}</span>
-                            {% endfor %}
-                        </dd>
-                    {% endif %}
-
-                    {% if page.maintainer %}
-                        <dt class="col-sm-4">
-                            Maintainer:
-                            {% if site.field_tooltips.maintainer %}
-                                <i class="fas fa-question-circle text-muted ms-1" 
-                                   data-bs-toggle="tooltip" 
-                                   data-bs-placement="top" 
-                                   data-bs-trigger="hover focus"
-                                   title="{{ site.field_tooltips.maintainer }}"></i>
-                            {% endif %}
-                        </dt>
-                        <dd class="col-sm-8">{{ page.maintainer }}</dd>
-                    {% endif %}
-
-                    {% if page.license %}
-                        <dt class="col-sm-4">
-                            License:
-                            {% if site.field_tooltips.license %}
-                                <i class="fas fa-question-circle text-muted ms-1" 
-                                   data-bs-toggle="tooltip" 
-                                   data-bs-placement="top" 
-                                   data-bs-trigger="hover focus"
-                                   title="{{ site.field_tooltips.license }}"></i>
-                            {% endif %}
-                        </dt>
-                        <dd class="col-sm-8">{{ page.license }}</dd>
-                    {% endif %}
-
-                    {% if page.last_updated %}
-                        <dt class="col-sm-4">Updated:</dt>
-                        <dd class="col-sm-8">{{ page.last_updated | date: "%B %d, %Y" }}</dd>
-                    {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 </dl>
-
-                {% if page.tags and page.tags.size > 0 %}
-                    <h6 class="mt-3">Tags</h6>
-                    <div class="d-flex flex-wrap gap-1">
-                        {% for tag in page.tags %}
-                            <span class="badge bg-secondary">{{ tag }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
             </div>
         </div>
 
-        <!-- Navigation -->
-        <div class="card mt-3">
+        <!-- Publication Section -->
+        {% assign publication_citation = page.publication_citation %}
+        {% assign publication_url = page.publication_url %}
+        {% if publication_citation or publication_url %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        Publication
+                        <i class="fas fa-question-circle text-muted ms-1" 
+                           data-bs-toggle="tooltip" 
+                           data-bs-placement="top" 
+                           data-bs-trigger="hover focus"
+                           title="Research publication related to this tool"></i>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if publication_citation %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <p class="mb-2"><em>{{ publication_citation }}</em></p>
+                                </div>
+                                <button class="btn btn-sm btn-outline-secondary ms-2" 
+                                        onclick="copyToClipboard('{{ publication_citation | escape }}')"
+                                        title="Copy citation to clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if publication_url %}
+                        <a href="{{ publication_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            View Publication ↗
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Navigation - Desktop only -->
+        <div class="card d-none d-lg-block">
             <div class="card-body text-center">
                 <a href="{{ '/' | relative_url }}" class="btn btn-outline-secondary">
                     ← Back to Overview
@@ -157,3 +263,25 @@ layout: default
         </div>
     </div>
 </div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Show temporary success feedback
+        const event = new Event('clipboard-copy');
+        document.dispatchEvent(event);
+        
+        // You could add a toast notification here
+        console.log('Citation copied to clipboard');
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+    });
+}
+</script>

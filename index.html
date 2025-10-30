@@ -20,27 +20,39 @@ title: "Tool Overview"
                         <input type="text" class="form-control" id="search" placeholder="Search by name, description, or maintainer...">
                     </div>
                     
-                    {% assign filterable_columns = site.table_columns | where_exp: "column", "column.filter" %}
-                    {% assign filter_count = filterable_columns.size %}
-                    {% assign col_size = 8 | divided_by: filter_count %}
-                    {% if col_size < 2 %}{% assign col_size = 2 %}{% endif %}
+                    {% assign filterable_fields = "" | split: "," %}
+                    {% for field in site.fields %}
+                        {% assign field_config = field[1] %}
+                        {% if field_config.filter.display == true %}
+                            {% assign filterable_fields = filterable_fields | push: field %}
+                        {% endif %}
+                    {% endfor %}
+                    {% assign filter_count = filterable_fields.size %}
+                    {% if filter_count > 0 %}
+                        {% assign col_size = 8 | divided_by: filter_count %}
+                        {% if col_size < 2 %}{% assign col_size = 2 %}{% endif %}
+                    {% else %}
+                        {% assign col_size = 12 %}
+                    {% endif %}
                     
-                    {% for column in filterable_columns %}
-                        {% if column.filter.type == "select" %}
+                    {% for field in filterable_fields %}
+                        {% assign field_name = field[0] %}
+                        {% assign field_config = field[1] %}
+                        {% if field_config.filter.type == "select" %}
                             <div class="col-md-{{ col_size }}">
-                                <label for="{{ column.field }}-filter" class="form-label">
-                                    {{ column.filter.label }}
-                                    {% if site.field_tooltips[column.field] %}
+                                <label for="{{ field_name }}-filter" class="form-label">
+                                    {% if field_config.filter.label %}{{ field_config.filter.label }}{% else %}{{ field_config.label }}{% endif %}
+                                    {% if field_config.tooltip %}
                                         <i class="fas fa-question-circle text-muted ms-1" 
                                            data-bs-toggle="tooltip" 
                                            data-bs-placement="top" 
                                            data-bs-trigger="hover focus"
-                                           title="{{ site.field_tooltips[column.field] }}"></i>
+                                           title="{{ field_config.tooltip }}"></i>
                                     {% endif %}
                                 </label>
-                                <select class="form-select filter-select" id="{{ column.field }}-filter" data-field="{{ column.field }}" data-type="select">
-                                    <option value="">All {{ column.filter.label }}</option>
-                                    {% assign field_values = site.tools | map: column.field | uniq | sort %}
+                                <select class="form-select filter-select" id="{{ field_name }}-filter" data-field="{{ field_name }}" data-type="select">
+                                    <option value="">All {% if field_config.filter.label %}{{ field_config.filter.label }}{% else %}{{ field_config.label }}{% endif %}</option>
+                                    {% assign field_values = site.tools | map: field_name | uniq | sort %}
                                     {% for value in field_values %}
                                         {% if value and value != "" %}
                                             <option value="{{ value }}">{{ value }}</option>
@@ -48,32 +60,32 @@ title: "Tool Overview"
                                     {% endfor %}
                                 </select>
                             </div>
-                        {% elsif column.filter.type == "multiselect-and" or column.filter.type == "multiselect-or" %}
+                        {% elsif field_config.filter.type == "multiselect-and" or field_config.filter.type == "multiselect-or" %}
                             <div class="col-md-{{ col_size }}">
                                 <label class="form-label">
-                                    {{ column.filter.label }}
-                                    {% if site.field_tooltips[column.field] %}
+                                    {% if field_config.filter.label %}{{ field_config.filter.label }}{% else %}{{ field_config.label }}{% endif %}
+                                    {% if field_config.tooltip %}
                                         <i class="fas fa-question-circle text-muted ms-1" 
                                            data-bs-toggle="tooltip" 
                                            data-bs-placement="top" 
                                            data-bs-trigger="hover focus"
-                                           title="{{ site.field_tooltips[column.field] }}"></i>
+                                           title="{{ field_config.tooltip }}"></i>
                                     {% endif %}
                                 </label>
                                 <div class="dropdown">
-                                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="{{ column.field }}-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="filter-text">All {{ column.filter.label }}</span>
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="{{ field_name }}-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="filter-text">All {% if field_config.filter.label %}{{ field_config.filter.label }}{% else %}{{ field_config.label }}{% endif %}</span>
                                     </button>
-                                    <ul class="dropdown-menu w-100" aria-labelledby="{{ column.field }}-dropdown">
+                                    <ul class="dropdown-menu w-100" aria-labelledby="{{ field_name }}-dropdown">
                                         <li>
-                                            <button class="dropdown-item clear-multiselect" type="button" data-field="{{ column.field }}">
+                                            <button class="dropdown-item clear-multiselect" type="button" data-field="{{ field_name }}">
                                                 <strong>Clear All</strong>
                                             </button>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                         {% assign all_values = "" | split: "," %}
                                         {% for tool in site.tools %}
-                                            {% assign field_value = tool[column.field] %}
+                                            {% assign field_value = tool[field_name] %}
                                             {% if field_value %}
                                                 {% if field_value.size > 0 %}
                                                     {% assign all_values = all_values | concat: field_value %}
@@ -84,12 +96,12 @@ title: "Tool Overview"
                                         {% for value in unique_values %}
                                             {% if value and value != "" %}
                                                 <li>
-                                                    <label class="dropdown-item" for="{{ column.field }}-{{ forloop.index }}">
+                                                    <label class="dropdown-item" for="{{ field_name }}-{{ forloop.index }}">
                                                         <input type="checkbox" class="form-check-input me-2 multiselect-checkbox" 
-                                                               id="{{ column.field }}-{{ forloop.index }}" 
-                                                               data-field="{{ column.field }}" 
+                                                               id="{{ field_name }}-{{ forloop.index }}" 
+                                                               data-field="{{ field_name }}" 
                                                                data-value="{{ value }}"
-                                                               data-type="{{ column.filter.type }}">
+                                                               data-type="{{ field_config.filter.type }}">
                                                         {{ value }}
                                                     </label>
                                                 </li>
@@ -121,10 +133,14 @@ title: "Tool Overview"
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                {% for column in site.table_columns %}
-                                <th {% if column.sortable %}class="sort" data-sort="{{ column.field }}"{% endif %}>
-                                    {{ column.name }}
-                                </th>
+                                {% for field in site.fields %}
+                                    {% assign field_name = field[0] %}
+                                    {% assign field_config = field[1] %}
+                                    {% if field_config.display contains "table" %}
+                                    <th {% if field_config.sortable %}class="sort" data-sort="{{ field_name }}"{% endif %}>
+                                        {{ field_config.label }}
+                                    </th>
+                                    {% endif %}
                                 {% endfor %}
                                 <th>Actions</th>
                             </tr>
@@ -132,21 +148,27 @@ title: "Tool Overview"
                         <tbody class="list">
                             {% for tool in site.tools %}
                                 <tr class="tool-row" data-tool="{{ tool.slug }}">
-                                    {% for column in site.table_columns %}
-                                        <td class="{{ column.field }}">
-                                            {% assign value = tool[column.field] %}
-                                            {% if column.field == 'name' and value %}
+                                    {% for field in site.fields %}
+                                        {% assign field_name = field[0] %}
+                                        {% assign field_config = field[1] %}
+                                        {% if field_config.display contains "table" %}
+                                        <td class="{{ field_name }}">
+                                            {% assign value = tool[field_name] %}
+                                            {% if field_config.type == 'array' and value and value.size > 0 %}
+                                                {{ value | join: ", " }}
+                                            {% elsif field_name == 'name' and value %}
                                                 <strong>{{ value }}</strong>
-                                            {% elsif column.field == 'sensor_data_types' and value and value.size > 0 %}
-                                                {{ value | join: ", " }}
-                                            {% elsif column.field == 'components' and value and value.size > 0 %}
-                                                {{ value | join: ", " }}
+                                            {% elsif field_config.display_style == 'badge' and value %}
+                                                <span class="badge bg-primary">{{ value }}</span>
                                             {% elsif value %}
                                                 {{ value }}
+                                            {% elsif field_config.show_if_empty %}
+                                                <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
                                             {% else %}
-                                                <span class="text-muted">-</span>
+                                                <span class="text-muted">{{ site.default_empty_value }}</span>
                                             {% endif %}
                                         </td>
+                                        {% endif %}
                                     {% endfor %}
                                     <td>
                                         <div class="btn-group" role="group">
@@ -183,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the list
     var options = {
         valueNames: [
-            {% for column in site.table_columns %}'{{ column.field }}'{% unless forloop.last %},{% endunless %}{% endfor %}
+            {% for field in site.fields %}{% assign field_name = field[0] %}{% assign field_config = field[1] %}{% if field_config.display contains "table" %}'{{ field_name }}'{% unless forloop.last %},{% endunless %}{% endif %}{% endfor %}
         ],
         listClass: 'list'
     };

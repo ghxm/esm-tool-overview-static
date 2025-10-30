@@ -39,7 +39,7 @@ This is a Jekyll-based static site for displaying ESM (Experience Sampling Metho
 
 **Single Source of Truth:** Tool data lives in `_tools/` as markdown files with YAML frontmatter. This eliminates duplication between data files and detail pages.
 
-**Configuration-Driven Filters:** The table columns and filter types are defined in `_config.yml` under `table_columns`. This allows dynamic generation of filters without code changes.
+**Configuration-Driven Filters:** The table columns and filter types are defined in `_config.yml` under `fields`. This allows dynamic generation of filters without code changes.
 
 **Hybrid Filtering System:** Uses List.js for basic search/sort functionality but implements custom JavaScript for complex multiselect filters with AND/OR logic.
 
@@ -79,43 +79,16 @@ This is a Jekyll-based static site for displaying ESM (Experience Sampling Metho
 - Includes `kramdown-parser-gfm` for GitHub Flavored Markdown
 - Local bundle path to avoid permission issues
 
-## Data Schema
+## Configuration Reference
 
-Tools in `_tools/` must include:
-- `layout: tool` (required)
-- `name`, `description`, `category` (required fields)
-- `pricing`, `components`, `sensor_data_types` (recommended arrays)
-- `output: false` (optional, hides tool from table and prevents detail page generation)
+**IMPORTANT:** For detailed configuration documentation including field configuration, display contexts, filter setup, and data schema, see the **Configuration** section in `README.md`. Keep that documentation up to date whenever configuration options change.
 
-## Tooltips
-
-Field tooltips can be configured in `_config.yml` under `field_tooltips`. These appear as question mark icons next to field labels in the tool detail sidebar:
-
-```yaml
-field_tooltips:
-  pricing: "The cost model for using this tool"
-  components: "The main parts or modules that make up this tool"
-```
-
-Tooltips work on both desktop (hover) and mobile (tap) using Bootstrap's tooltip component.
-
-## Filter Configuration
-
-Add new filters by updating `_config.yml`:
-
-```yaml
-table_columns:
-  - name: "Field Name"
-    field: "field_name"
-    filter:
-      type: "select|multiselect-and|multiselect-or"
-      label: "Display Label"
-```
-
-Filter types:
-- `select`: Single-value dropdown
-- `multiselect-and`: All selected values must be present in tool
-- `multiselect-or`: Any selected value can be present in tool
+Key configuration concepts:
+- **Display Contexts:** `table`, `detail_overview`, `detail_info`, `detail_publication`
+- **Field Types:** `string`, `category`, `array`, `url`, `date`
+- **Filter Types:** `select`, `multiselect-and`, `multiselect-or`
+- **Publication Fields:** Separate `publication_url` and `publication_citation` fields
+- **Automatic Sectioning:** Uncategorized `detail_info` fields appear in "Other" section
 
 ## Common Issues
 
