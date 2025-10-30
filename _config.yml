@@ -8,7 +8,6 @@ url: "https://ghxm.github.io"
 markdown: kramdown
 highlighter: rouge
 plugins:
-  - jekyll-feed
   - jekyll-sitemap
 
 # Collections

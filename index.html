@@ -114,13 +114,22 @@ title: "Tool Overview"
                     {% endfor %}
                 </div>
                 <div class="row mt-3">
-                    <div class="col-12">
+                    <div class="col-md-6">
                         <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-filters">
                             Clear Filters
                         </button>
                         <span class="text-muted ms-3">
                             Showing <span id="tool-count">0</span> tools
                         </span>
+                    </div>
+                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                        <span class="text-muted small">Export: </span>
+                        <a href="{{ '/tools.json' | relative_url }}" class="btn btn-outline-primary btn-sm" title="Download as JSON">
+                            <i class="fas fa-download"></i> JSON
+                        </a>
+                        <a href="{{ '/tools.csv' | relative_url }}" class="btn btn-outline-primary btn-sm ms-1" title="Download as CSV">
+                            <i class="fas fa-download"></i> CSV
+                        </a>
                     </div>
                 </div>
             </div>
@@ -268,19 +277,45 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedValues.push(checkbox.dataset.value);
         });
         
+        var button = document.querySelector(`#${field}-dropdown .filter-text`);
+        if (!button) return;
+        
+        // Get the original "All" text by looking at the initial text or extracting from current text
+        var originalText = button.getAttribute('data-original-text');
+        if (!originalText) {
+            // If not stored, extract from current text or reconstruct
+            var currentText = button.textContent.trim();
+            if (currentText.startsWith('All ')) {
+                originalText = currentText;
+            } else {
+                // Find the clear button to get the field name from its data attribute
+                var clearButton = document.querySelector(`[data-field="${field}"].clear-multiselect`);
+                if (clearButton) {
+                    var dropdown = clearButton.closest('.dropdown');
+                    var label = dropdown.querySelector('label .form-label');
+                    if (label) {
+                        originalText = `All ${label.textContent.trim()}`;
+                    } else {
+                        // Fallback to looking at the dropdown button's original content
+                        originalText = `All ${field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ')}`;
+                    }
+                } else {
+                    originalText = `All ${field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ')}`;
+                }
+            }
+            button.setAttribute('data-original-text', originalText);
+        }
+        
         var displayText;
         if (selectedValues.length === 0) {
-            displayText = `All ${field.charAt(0).toUpperCase() + field.slice(1)}`;
+            displayText = originalText;
         } else if (selectedValues.length === 1) {
             displayText = selectedValues[0];
         } else {
             displayText = `${selectedValues.length} selected`;
         }
         
-        var button = document.querySelector(`#${field}-dropdown .filter-text`);
-        if (button) {
-            button.textContent = displayText;
-        }
+        button.textContent = displayText;
     }
     
     // Combined filter function
