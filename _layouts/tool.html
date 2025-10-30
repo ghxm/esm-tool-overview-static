@@ -124,7 +124,7 @@ layout: default
                                             {% endif %}
                                         {% endfor %}
                                     {% elsif field_config.type == 'date' and value %}
-                                        {{ value | date: "%B %d, %Y" }}
+                                        {{ value | date: "%Y-%m-%d" }}
                                     {% elsif field_config.display_style == 'badge' and value %}
                                         <span class="badge bg-primary">{{ value }}</span>
                                     {% elsif value %}
@@ -194,7 +194,9 @@ layout: default
                                                 {% assign short_url = short_url | slice: 0, url_length %}
                                             {% endif %}
                                         {% endif %}
-                                        <a href="{{ value }}" target="_blank" class="text-break">{{ short_url }}</a>
+                                        <a href="{{ value }}" target="_blank" class="btn btn-sm btn-outline-primary text-break">
+                                            {{ short_url }} ↗
+                                        </a>
                                     {% elsif field_name == 'publication_url' and value %}
                                         {% assign url_parts = value | split: '/' %}
                                         {% assign domain = url_parts[2] %}
@@ -208,7 +210,9 @@ layout: default
                                                 {% assign short_url = short_url | slice: 0, url_length %}
                                             {% endif %}
                                         {% endif %}
-                                        <a href="{{ value }}" target="_blank" class="text-break">{{ short_url }}</a>
+                                        <a href="{{ value }}" target="_blank" class="btn btn-sm btn-outline-primary text-break">
+                                            {{ short_url }} ↗
+                                        </a>
                                     {% elsif field_config.display_style == 'badge' and value %}
                                         <span class="badge bg-primary">{{ value }}</span>
                                     {% elsif value %}
