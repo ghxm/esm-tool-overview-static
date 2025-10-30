@@ -114,11 +114,9 @@ fields:
   maintainer:
     label: "Maintainer"
     type: "string"
-    display: ["detail_overview"]
+    display: ["table", "detail_overview"]
     sortable: true
     show_if_empty: false
-    filter:
-      display: false
     tooltip: "The organization or person responsible for maintaining this tool"
     
   license:
