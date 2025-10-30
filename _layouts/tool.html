@@ -188,6 +188,11 @@ layout: default
                                             {% assign short_url = domain | append: '/' | append: url_parts[3] | append: '/...' %}
                                         {% else %}
                                             {% assign short_url = value | remove: 'https://' | remove: 'http://' %}
+                                            {% assign last_char = short_url | slice: -1 %}
+                                            {% if last_char == '/' %}
+                                                {% assign url_length = short_url | size | minus: 1 %}
+                                                {% assign short_url = short_url | slice: 0, url_length %}
+                                            {% endif %}
                                         {% endif %}
                                         <a href="{{ value }}" target="_blank" class="text-break">{{ short_url }}</a>
                                     {% elsif field_name == 'publication_url' and value %}
@@ -197,6 +202,11 @@ layout: default
                                             {% assign short_url = domain | append: '/' | append: url_parts[3] | append: '/...' %}
                                         {% else %}
                                             {% assign short_url = value | remove: 'https://' | remove: 'http://' %}
+                                            {% assign last_char = short_url | slice: -1 %}
+                                            {% if last_char == '/' %}
+                                                {% assign url_length = short_url | size | minus: 1 %}
+                                                {% assign short_url = short_url | slice: 0, url_length %}
+                                            {% endif %}
                                         {% endif %}
                                         <a href="{{ value }}" target="_blank" class="text-break">{{ short_url }}</a>
                                     {% elsif field_config.display_style == 'badge' and value %}
