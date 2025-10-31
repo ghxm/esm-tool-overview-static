@@ -79,6 +79,13 @@
                 });
             });
             
+            // Prevent popover icons from triggering parent dropdown/filter clicks
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function(popoverIcon) {
+                popoverIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+            
             // Close popovers when clicking outside
             document.addEventListener('click', function (e) {
                 popoverList.forEach(function(popover) {
