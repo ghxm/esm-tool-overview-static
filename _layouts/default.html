@@ -73,7 +73,9 @@
                 return new bootstrap.Popover(popoverTriggerEl, {
                     html: true,
                     trigger: 'click',
-                    placement: 'top'
+                    placement: 'auto',
+                    boundary: 'viewport',
+                    fallbackPlacements: ['bottom', 'left', 'right', 'top']
                 });
             });
             
