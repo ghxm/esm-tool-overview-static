@@ -79,10 +79,11 @@
                 });
             });
             
-            // Prevent popover icons from triggering parent dropdown/filter clicks
-            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function(popoverIcon) {
-                popoverIcon.addEventListener('click', function(e) {
+            // Prevent help icons from triggering parent dropdown/filter clicks
+            document.querySelectorAll('[data-bs-toggle="popover"], [data-bs-toggle="tooltip"]').forEach(function(helpIcon) {
+                helpIcon.addEventListener('click', function(e) {
                     e.stopPropagation();
+                    e.preventDefault();
                 });
             });
             
