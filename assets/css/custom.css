@@ -233,8 +233,3 @@ code {
 .shadow-hover {
     transition: background-color 0.15s ease-in-out;
 }
-
-/* Tooltip styling */
-.tooltip.show .tooltip-inner {
-    text-align: left;
-}
