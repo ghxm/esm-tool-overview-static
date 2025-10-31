@@ -48,6 +48,13 @@ title: "Tool Overview"
                                            data-bs-placement="top" 
                                            data-bs-trigger="hover focus"
                                            title="{{ field_config.tooltip }}"></i>
+                                    {% elsif field_config.popover %}
+                                        <i class="fas fa-question-circle text-muted ms-1" 
+                                           data-bs-toggle="popover" 
+                                           data-bs-placement="top" 
+                                           data-bs-trigger="click"
+                                           data-bs-title="{{ field_config.popover.title }}"
+                                           data-bs-content="{{ field_config.popover.content }}"></i>
                                     {% endif %}
                                 </label>
                                 <select class="form-select filter-select" id="{{ field_name }}-filter" data-field="{{ field_name }}" data-type="select">
@@ -70,6 +77,13 @@ title: "Tool Overview"
                                            data-bs-placement="top" 
                                            data-bs-trigger="hover focus"
                                            title="{{ field_config.tooltip }}"></i>
+                                    {% elsif field_config.popover %}
+                                        <i class="fas fa-question-circle text-muted ms-1" 
+                                           data-bs-toggle="popover" 
+                                           data-bs-placement="top" 
+                                           data-bs-trigger="click"
+                                           data-bs-title="{{ field_config.popover.title }}"
+                                           data-bs-content="{{ field_config.popover.content }}"></i>
                                     {% endif %}
                                 </label>
                                 <div class="dropdown">

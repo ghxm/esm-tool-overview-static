@@ -45,6 +45,13 @@ layout: default
                                                data-bs-placement="top" 
                                                data-bs-trigger="hover focus"
                                                title="{{ field_config.tooltip }}"></i>
+                                        {% elsif field_config.popover %}
+                                            <i class="fas fa-question-circle text-muted ms-1" 
+                                               data-bs-toggle="popover" 
+                                               data-bs-placement="top" 
+                                               data-bs-trigger="click"
+                                               data-bs-title="{{ field_config.popover.title }}"
+                                               data-bs-content="{{ field_config.popover.content }}"></i>
                                         {% endif %}
                                     </dt>
                                     <dd class="col-sm-9">
@@ -108,6 +115,13 @@ layout: default
                                            data-bs-placement="top" 
                                            data-bs-trigger="hover focus"
                                            title="{{ field_config.tooltip }}"></i>
+                                    {% elsif field_config.popover %}
+                                        <i class="fas fa-question-circle text-muted ms-1" 
+                                           data-bs-toggle="popover" 
+                                           data-bs-placement="top" 
+                                           data-bs-trigger="click"
+                                           data-bs-title="{{ field_config.popover.title }}"
+                                           data-bs-content="{{ field_config.popover.content }}"></i>
                                     {% endif %}
                                 </dt>
                                 <dd class="col-sm-9">
@@ -176,6 +190,13 @@ layout: default
                                            data-bs-placement="top" 
                                            data-bs-trigger="hover focus"
                                            title="{{ field_config.tooltip }}"></i>
+                                    {% elsif field_config.popover %}
+                                        <i class="fas fa-question-circle text-muted ms-1" 
+                                           data-bs-toggle="popover" 
+                                           data-bs-placement="top" 
+                                           data-bs-trigger="click"
+                                           data-bs-title="{{ field_config.popover.title }}"
+                                           data-bs-content="{{ field_config.popover.content }}"></i>
                                     {% endif %}
                                 </dt>
                                 <dd class="col-sm-8">
@@ -234,14 +255,7 @@ layout: default
         {% if publication_citation or publication_url %}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        Publication
-                        <i class="fas fa-question-circle text-muted ms-1" 
-                           data-bs-toggle="tooltip" 
-                           data-bs-placement="top" 
-                           data-bs-trigger="hover focus"
-                           title="Research publication related to this tool"></i>
-                    </h5>
+                    <h5 class="card-title mb-0">Publication</h5>
                 </div>
                 <div class="card-body">
                     {% if publication_citation %}

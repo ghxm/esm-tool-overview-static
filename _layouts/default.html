@@ -47,14 +47,43 @@
     <!-- Custom JS -->
     <script src="{{ '/assets/js/table.js' | relative_url }}"></script>
     
-    <!-- Initialize Bootstrap tooltips -->
+    <!-- Initialize Bootstrap tooltips and popovers -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Check for conflicting tooltip/popover configurations
+            {% for field in site.fields %}
+                {% assign field_name = field[0] %}
+                {% assign field_config = field[1] %}
+                {% if field_config.tooltip and field_config.popover %}
+                    console.warn('Field "{{ field_name }}" has both tooltip and popover configured. Using popover only.');
+                {% endif %}
+            {% endfor %}
+            
             // Initialize all tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl, {
                     html: true
+                });
+            });
+            
+            // Initialize all popovers
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl, {
+                    html: true,
+                    trigger: 'click',
+                    placement: 'top'
+                });
+            });
+            
+            // Close popovers when clicking outside
+            document.addEventListener('click', function (e) {
+                popoverList.forEach(function(popover) {
+                    // If the click was not on the trigger element or inside the popover
+                    if (!popover._element.contains(e.target)) {
+                        popover.hide();
+                    }
                 });
             });
         });

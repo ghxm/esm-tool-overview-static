@@ -72,7 +72,9 @@ fields:
       display: true
       type: "select"
       label: "Category"
-    tooltip: "The category or type of tool (Platform, Library, Framework, etc.)"
+    popover:
+      title: "Tool Categories"
+      content: "• <strong>Single study tool</strong>: Designed to study a single, specific, and narrow research topic<br>• <strong>Platform</strong>: Possibility to create and customize projects for studying any research topic<br>• <strong>Panel-integrated tool</strong>: Offered as part of a (commercial) survey panel, tied to provider's panelists<br>• <strong>Technical framework</strong>: Allows creating custom app/collection infrastructure based on pre-developed modules"
     
   pricing:
     label: "Pricing"
