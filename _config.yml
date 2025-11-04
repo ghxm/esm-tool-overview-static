@@ -177,20 +177,3 @@ fields:
       display: false
     tooltip: "Bibliographical reference for this tool's publication"
     
-  # Hidden fields for value tooltip descriptions
-  category_other_description:
-    label: "Other Category Description"
-    type: "string"
-    display: []
-    show_if_empty: false
-    filter:
-      display: false
-      
-  components_other_description:
-    label: "Other Components Description"
-    type: "string"
-    display: []
-    show_if_empty: false
-    filter:
-      display: false
-
