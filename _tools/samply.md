@@ -2,11 +2,14 @@
 layout: tool
 name: "Samply Stream API"
 description: "Samply is a tool to..."
-category: "Platform"
+category: "Other"
+category_other_description: "Specialized streaming platform for real-time ESM data collection with custom API integration"
 pricing: "Free"
 components:
   - "API"
   - "App"
+  - "Other"
+components_other_description: "Custom hardware integration module for specialized sensors"
 sensor_data_types:
   - "Notifications"
 maintainer: "Samply team"

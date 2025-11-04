@@ -57,22 +57,59 @@ layout: default
                                     <dd class="col-sm-9">
                                         {% if field_config.type == 'array' and value and value.size > 0 %}
                                             {% for item in value %}
+                                                {% comment %} Check for value tooltip for this array item {% endcomment %}
+                                                {% assign tooltip_field = nil %}
+                                                {% if field_config.value_tooltips %}
+                                                    {% assign item_lower = item | downcase %}
+                                                    {% for tooltip_pair in field_config.value_tooltips %}
+                                                        {% assign key_lower = tooltip_pair[0] | downcase %}
+                                                        {% if key_lower == item_lower %}
+                                                            {% assign tooltip_field = tooltip_pair[1] %}
+                                                            {% break %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                                
                                                 {% if field_name == 'components' %}
-                                                    <span class="badge bg-success me-1">{{ item }}</span>
+                                                    <span class="badge bg-success me-1">{{ item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
                                                 {% elsif field_name == 'sensor_data_types' %}
-                                                    <span class="badge bg-info me-1">{{ item }}</span>
+                                                    <span class="badge bg-info me-1">{{ item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
                                                 {% elsif field_name == 'tags' %}
-                                                    <span class="badge bg-secondary me-1">{{ item }}</span>
+                                                    <span class="badge bg-secondary me-1">{{ item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
                                                 {% else %}
-                                                    <span class="badge bg-primary me-1">{{ item }}</span>
+                                                    <span class="badge bg-primary me-1">{{ item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
                                                 {% endif %}
                                             {% endfor %}
                                         {% elsif field_config.type == 'date' and value %}
                                             {{ value | date: "%B %d, %Y" }}
                                         {% elsif field_config.display_style == 'badge' and value %}
-                                            <span class="badge bg-primary">{{ value }}</span>
+                                            {% comment %} Check for value tooltip for single badge value {% endcomment %}
+                                            {% assign tooltip_field = nil %}
+                                            {% if field_config.value_tooltips %}
+                                                {% assign value_lower = value | downcase %}
+                                                {% for tooltip_pair in field_config.value_tooltips %}
+                                                    {% assign key_lower = tooltip_pair[0] | downcase %}
+                                                    {% if key_lower == value_lower %}
+                                                        {% assign tooltip_field = tooltip_pair[1] %}
+                                                        {% break %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                            <span class="badge bg-primary">{{ value }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
                                         {% elsif value %}
-                                            {{ value }}
+                                            {% comment %} Check for value tooltip for single text value {% endcomment %}
+                                            {% assign tooltip_field = nil %}
+                                            {% if field_config.value_tooltips %}
+                                                {% assign value_lower = value | downcase %}
+                                                {% for tooltip_pair in field_config.value_tooltips %}
+                                                    {% assign key_lower = tooltip_pair[0] | downcase %}
+                                                    {% if key_lower == value_lower %}
+                                                        {% assign tooltip_field = tooltip_pair[1] %}
+                                                        {% break %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                            {{ value }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}
                                         {% elsif field_config.show_if_empty %}
                                             <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
                                         {% endif %}
