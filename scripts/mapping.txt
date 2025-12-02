@@ -1,0 +1,85 @@
+# Example mapping file for CSV to Jekyll tools conversion
+# Format: csv_column_name:yaml_field_name
+# Lines starting with # are comments and will be ignored
+
+tool_name:title
+
+# METADATA
+tool_name:metadata.name
+
+tool_category:metadata.category
+tool_category_other_description:metadata.tool_category_other_description
+
+provider:metadata.provider_type
+provider_name:metadata.provider
+
+developer:metadata.developer_type
+developer_name:metadata.developer
+
+target:metadata.target_audience
+
+pricing:metadata.pricing
+
+info_website:metadata.website_url
+info_documentation:metadata.documentation_url
+
+info_publication:metadata.publication_url
+info_other:metadata.other_url
+
+# TECHNICAL DETAILS
+
+info_github:technical.source_code_url
+
+software_components:technical.components
+software_components_other_description:technical.software_components_other_description
+
+distribution:technical.hosting
+server_location:technical.server_location
+licensing:technical.license
+
+device:technical.participant_platform
+system_smartphone:technical.participant_phone_os
+system_watch:technical.participant_watch_os
+install:technical.participant_install_source
+
+is_maintained:technical.is_maintained
+contribution:technical.contribution
+
+# DATA
+
+## Sensor data
+
+sensorlog_description:data.sensor.sensorlog_description
+devicelog_description:data.sensor.devicelog_description
+usagelog_description:data.sensor.usagelog_description
+
+## Survey data
+
+items:data.survey.items
+input_validation:data.survey.input_validation
+survey_flow:data.survey.flow
+media:data.survey.media_types
+
+# SCHEDULING
+
+schedules:scheduling.schedule_types
+schedules_time:scheduling.schedules_time_based_description
+signalling:scheduling.signal
+
+# OTHER
+
+accessibility:other.accessibility
+documentation_yes:other.documentation_available
+
+
+# participant_access:participant_access
+# required_IT_skills:required_it_skills
+
+
+
+consultation:other.consultation_available
+
+
+
+# Content field (will become markdown content, not YAML frontmatter)
+# detailed_description:content
