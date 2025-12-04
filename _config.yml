@@ -96,7 +96,7 @@ fields:
     
   metadata.pricing:
     label: "Pricing"
-    type: "category"
+    type: "array"
     display_style: "badge"
     display: ["table", "detail_info"]
     sortable: true
@@ -165,11 +165,11 @@ fields:
   technical.participant_phone_os:
     label: "Mobile OS"
     type: "array"
-    display: ["table", "detail_info"]
+    display: ["detail_info"]
     sortable: false
     show_if_empty: false
     filter:
-      display: true
+      display: false
       type: "multiselect-or"
       label: "Mobile OS"
     popover:
@@ -275,7 +275,7 @@ fields:
     sortable: false
     show_if_empty: false
     filter:
-      display: true
+      display: false
       type: "multiselect-or"
       label: "Schedule Type"
     popover:
@@ -289,7 +289,7 @@ fields:
     sortable: false
     show_if_empty: false
     filter:
-      display: true
+      display: false
       type: "multiselect-or"
       label: "Notification"
     popover:
@@ -304,7 +304,7 @@ fields:
     sortable: true
     show_if_empty: false
     filter:
-      display: true
+      display: false
       type: "select"
       label: "Documentation"
     popover:

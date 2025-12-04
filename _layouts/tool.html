@@ -38,7 +38,7 @@ layout: default
                                 {% include get_field_value.html field_name=field_name %}
                                 {% assign value = field_value %}
                                 {% if value or field_config.show_if_empty %}
-                                    <dt class="col-sm-3">
+                                    <dt class="col-sm-3 small">
                                         {{ field_config.label }}:
                                         {% if field_config.tooltip %}
                                             <i class="fas fa-question-circle text-muted ms-1" 
@@ -146,7 +146,7 @@ layout: default
                             {% include get_field_value.html field_name=field_name %}
                             {% assign value = field_value %}
                             {% if value or field_config.show_if_empty %}
-                                <dt class="col-sm-3">
+                                <dt class="col-sm-3 small">
                                     {{ field_config.label }}:
                                     {% if field_config.tooltip %}
                                         <i class="fas fa-question-circle text-muted ms-1" 
@@ -222,7 +222,7 @@ layout: default
                             {% include get_field_value.html field_name=field_name %}
                             {% assign value = field_value %}
                             {% if value or field_config.show_if_empty %}
-                                <dt class="col-sm-4">
+                                <dt class="col-sm-4 small">
                                     {{ field_config.label }}:
                                     {% if field_config.tooltip %}
                                         <i class="fas fa-question-circle text-muted ms-1" 
