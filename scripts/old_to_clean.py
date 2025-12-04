@@ -95,7 +95,7 @@ def combine_columns(row: Dict[str, str], main_field: str, additional_fields: Lis
     return ', '.join(sorted(set(all_items)))
 
 
-def incorporate_other_into_main(row: Dict[str, str], field: str, to_delete: List[str], na_values: set = None) -> str:
+def incorporate_other_into_main(row: Dict[str, str], field: str, to_delete: List[str], na_values: set = None, lowercase_other: bool = False) -> str:
     """Incorporate _other values into main field, replacing 'other' entries."""
     if na_values is None:
         na_values = {'NA', 'unknown', 'Unknown'}
@@ -111,6 +111,8 @@ def incorporate_other_into_main(row: Dict[str, str], field: str, to_delete: List
     # Add other_value if it exists
     if other_value and other_value not in na_values:
         other_items = [item.strip() for item in other_value.split(',') if item.strip() and item not in na_values]
+        if lowercase_other:
+            other_items = [item.lower() for item in other_items]
         values.extend(other_items)
     
     to_delete.append(f"{field}_other")
@@ -160,20 +162,20 @@ def simplify_install(value: str, na_values: set = None) -> str:
 
 
 def clean_boolean_field(value: str, na_values: set = None) -> str:
-    """Clean boolean fields to consistent yes/no format."""
+    """Clean boolean fields to consistent true/false format."""
     if na_values is None:
         na_values = {'NA', 'unknown', 'Unknown'}
     
     if not value or value in na_values:
-        return 'No'
+        return 'false'
     
     value_lower = value.lower()
     if value_lower in ['true', 'yes', '1', 'TRUE']:
-        return 'Yes'
+        return 'true'
     elif value_lower in ['false', 'no', '0', 'FALSE']:
-        return 'No'
+        return 'false'
     else:
-        return 'No'
+        return 'false'
 
 
 def simplify_device_field(value: str, na_values: set = None) -> str:
@@ -205,6 +207,18 @@ def simplify_device_field(value: str, na_values: set = None) -> str:
     return ', '.join(sorted(set(devices)))
 
 
+def lowercase_values(value: str, na_values: set = None) -> str:
+    """Convert comma-separated values to lowercase."""
+    if na_values is None:
+        na_values = {'NA', 'unknown', 'Unknown'}
+    
+    if not value or value in na_values:
+        return ''
+    
+    values = [v.strip().lower() for v in value.split(',') if v.strip() and v not in na_values]
+    return ', '.join(values)
+
+
 def replace_strings(value: str, replacements: dict, na_values: set = None) -> str:
     """Replace strings according to replacement mapping."""
     if na_values is None:
@@ -231,21 +245,21 @@ def apply_transformations(row: Dict[str, str], na_values: set = None) -> Dict[st
     
     # 1. Category: Other + Desc Field for other
     category, category_desc = keep_other_with_description(cleaned, 'tool_category', to_delete, na_values)
-    cleaned['tool_category'] = to_title_case(category, na_values)
+    #cleaned['tool_category'] = to_title_case(category, na_values)
     if category_desc:
         cleaned['tool_category_other_description'] = category_desc
     
     # 2. Software components: as category (same as category)
     components, components_desc = keep_other_with_description(cleaned, 'software_components', to_delete, na_values)
-    cleaned['software_components'] = to_title_case(components, na_values)
+    #cleaned['software_components'] = to_title_case(components, na_values)
     if components_desc:
         cleaned['software_components_other_description'] = components_desc
     
     # 3. Provider: no other
-    cleaned['provider'] = to_title_case(remove_other_operation(cleaned, 'provider', to_delete, na_values), na_values)
+    cleaned['provider'] = remove_other_operation(cleaned, 'provider', to_delete, na_values)
     
     # 4. Developer: as provider
-    cleaned['developer'] = to_title_case(remove_other_operation(cleaned, 'developer', to_delete, na_values), na_values)
+    cleaned['developer'] = remove_other_operation(cleaned, 'developer', to_delete, na_values)
     
     # 5. Target: no other; stick to academic, clinical, commercial, therapy
     target_mapping = {
@@ -258,13 +272,13 @@ def apply_transformations(row: Dict[str, str], na_values: set = None) -> Dict[st
     to_delete.extend(['target_other'])
     
     # 6. Pricing: no other
-    cleaned['pricing'] = to_title_case(remove_other_operation(cleaned, 'pricing', to_delete, na_values), na_values)
+    cleaned['pricing'] = remove_other_operation(cleaned, 'pricing', to_delete, na_values)
     
     # 7. Sensor data consolidation: rename and combine with _other fields
-    cleaned['sensorlog_description'] = to_title_case(incorporate_other_into_main(cleaned, 'sensorlog', to_delete, na_values), na_values)
-    cleaned['devicelog_description'] = to_title_case(incorporate_other_into_main(cleaned, 'devicelog', to_delete, na_values), na_values)
-    cleaned['usagelog_description'] = to_title_case(incorporate_other_into_main(cleaned, 'usagelog', to_delete, na_values), na_values)
-    cleaned['items'] = to_title_case(incorporate_other_into_main(cleaned, 'items', to_delete, na_values), na_values)
+    cleaned['sensorlog_description'] = incorporate_other_into_main(cleaned, 'sensorlog', to_delete, na_values, lowercase_other=True)
+    cleaned['devicelog_description'] = incorporate_other_into_main(cleaned, 'devicelog', to_delete, na_values, lowercase_other=True)
+    cleaned['usagelog_description'] = incorporate_other_into_main(cleaned, 'usagelog', to_delete, na_values, lowercase_other=True)
+    cleaned['items'] = incorporate_other_into_main(cleaned, 'items', to_delete, na_values, lowercase_other=True)
     to_delete.extend(['sensorlog', 'devicelog', 'usagelog', 'sensor_data'])
     
     # 8. Input validation: no other, merge
@@ -293,17 +307,27 @@ def apply_transformations(row: Dict[str, str], na_values: set = None) -> Dict[st
     to_delete.append('schedules_event')
     
     # 14. Signalling: no other, incorporate other into signalling, simplify
-    cleaned['signalling'] = incorporate_other_into_main(cleaned, 'signalling', to_delete, na_values)
+    cleaned['signalling'] = incorporate_other_into_main(cleaned, 'signalling', to_delete, na_values, lowercase_other=True)
     
     # 15. Device: no other, incorporate other into device, simplify to Phone/Web/Smartwatch
-    device_combined = incorporate_other_into_main(cleaned, 'device', to_delete, na_values)
+    device_combined = incorporate_other_into_main(cleaned, 'device', to_delete, na_values, lowercase_other=True)
     cleaned['device'] = simplify_device_field(device_combined, na_values)
     
-    # 15b. String replacements (e.g. capitalize Android)
-    string_replacements = {'android': 'Android'}
+    # 15b. String replacements and boolean standardization
+    string_replacements = {'free of charge': 'free'}
+    boolean_replacements = {'TRUE': 'true', 'FALSE': 'false', 'Yes': 'true', 'No': 'false'}
+    
+    # Apply string replacements to all fields (especially pricing fields)
     for field in cleaned.keys():
-        if field.startswith('system_') or field in ['device']:  # Apply to system fields and device
-            cleaned[field] = replace_strings(cleaned[field], string_replacements, na_values)
+        cleaned[field] = replace_strings(cleaned[field], string_replacements, na_values)
+        # Apply boolean standardization to all fields
+        cleaned[field] = replace_strings(cleaned[field], boolean_replacements, na_values)
+    
+    # Apply lowercase to specified columns
+    lowercase_fields = ['server_location', 'target', 'device', 'install', 'system_smartphone']
+    for field in lowercase_fields:
+        if field in cleaned:
+            cleaned[field] = lowercase_values(cleaned[field], na_values)
     
     # 16. System tablet: delete
     to_delete.append('system_tablet')
