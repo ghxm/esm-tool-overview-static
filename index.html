@@ -192,13 +192,20 @@ title: "Tool Overview"
                                             {% include get_field_value.html field_name=field_name %}
                                             {% assign value = field_value %}
                                             {% if field_config.type == 'array' and value and value.size > 0 %}
-                                                {{ value | join: ", " }}
+                                                {% assign transformed_values = "" | split: "," %}
+                                                {% for item in value %}
+                                                    {% include apply_value_label.html value=item field_config=field_config %}
+                                                    {% assign transformed_values = transformed_values | push: display_value %}
+                                                {% endfor %}
+                                                {{ transformed_values | join: ", " }}
                                             {% elsif field_name == 'name' and value %}
                                                 <strong>{{ value }}</strong>
                                             {% elsif field_config.display_style == 'badge' and value %}
-                                                <span class="badge bg-primary">{{ value }}</span>
+                                                {% include apply_value_label.html value=value field_config=field_config %}
+                                                <span class="badge bg-primary">{{ display_value }}</span>
                                             {% elsif value %}
-                                                {{ value }}
+                                                {% include apply_value_label.html value=value field_config=field_config %}
+                                                {{ display_value }}
                                             {% elsif field_config.show_if_empty %}
                                                 <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
                                             {% else %}
@@ -499,6 +506,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add hover effect to all rows
     document.querySelectorAll('.tool-row').forEach(function(row) {
         row.style.cursor = 'pointer';
+    });
+    
+    // Close other popovers when a new one is opened
+    const popoverElements = document.querySelectorAll('[data-bs-toggle="popover"]');
+    
+    popoverElements.forEach(function(element) {
+        element.addEventListener('click', function() {
+            // Hide all other popovers
+            popoverElements.forEach(function(otherElement) {
+                if (otherElement !== element) {
+                    const popover = bootstrap.Popover.getInstance(otherElement);
+                    if (popover) {
+                        popover.hide();
+                    }
+                }
+            });
+        });
     });
     
 });

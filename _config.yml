@@ -79,6 +79,7 @@ fields:
     display: ["table", "detail_info"]
     sortable: true
     show_if_empty: false
+    titlecase: true
     filter:
       display: true
       type: "select"
@@ -101,6 +102,7 @@ fields:
     display: ["table", "detail_info"]
     sortable: true
     show_if_empty: false
+    titlecase: false
     filter:
       display: true
       type: "select"
@@ -138,6 +140,7 @@ fields:
     display: ["table", "detail_info"]
     sortable: false
     show_if_empty: false
+    titlecase: true
     filter:
       display: true
       type: "multiselect-and"
@@ -147,6 +150,8 @@ fields:
       content: "• <strong>Interface</strong>: Web-based or desktop interface for tool configuration and data management<br>• <strong>App</strong>: Mobile application for participants<br>• <strong>Backend</strong>: Server infrastructure for data collection and processing<br>• <strong>SDK/API</strong>: Software development kit or programming interface<br>• <strong>Plugin</strong>: Extensions or add-ons for existing platforms"
     value_tooltips:
       "other": "technical.software_components_other_description"
+    value_labels:
+      "other": "Other"
       
   technical.participant_platform:
     label: "Platform"
@@ -182,6 +187,7 @@ fields:
     display: ["detail_info"]
     sortable: true
     show_if_empty: false
+    titlecase: true
     popover:
       title: "Software Licenses"
       content: "• <strong>Permissive open-source</strong>: MIT, Apache, BSD-style licenses allowing commercial use<br>• <strong>Nonpermissive open-source</strong>: GPL, AGPL licenses requiring derivative works to be open source<br>• <strong>Proprietary</strong>: Closed-source commercial license<br>• <strong>Academic</strong>: Free for academic use only"
