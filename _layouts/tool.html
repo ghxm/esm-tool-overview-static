@@ -30,12 +30,13 @@ layout: default
             </div>
             <div class="card-body">
                 {% for section in site.detail_info_sections %}
-                    <h6 class="mt-3 mb-2">{{ section.name }}</h6>
+                    <h6 class="mt-3 mb-2 pb-1 border-bottom">{{ section.name }}</h6>
                     <dl class="row">
                         {% for field_name in section.fields %}
                             {% assign field_config = site.fields[field_name] %}
                             {% if field_config.display contains "detail_info" %}
-                                {% assign value = page[field_name] %}
+                                {% include get_field_value.html field_name=field_name %}
+                                {% assign value = field_value %}
                                 {% if value or field_config.show_if_empty %}
                                     <dt class="col-sm-3">
                                         {{ field_config.label }}:
@@ -138,11 +139,12 @@ layout: default
                 {% endfor %}
                 
                 {% if other_fields.size > 0 %}
-                    <h6 class="mt-3 mb-2">Other</h6>
+                    <h6 class="mt-3 mb-2 pb-1 border-bottom">Other</h6>
                     <dl class="row">
                         {% for field_name in other_fields %}
                             {% assign field_config = site.fields[field_name] %}
-                            {% assign value = page[field_name] %}
+                            {% include get_field_value.html field_name=field_name %}
+                            {% assign value = field_value %}
                             {% if value or field_config.show_if_empty %}
                                 <dt class="col-sm-3">
                                     {{ field_config.label }}:
@@ -217,7 +219,8 @@ layout: default
                         {% assign field_name = field[0] %}
                         {% assign field_config = field[1] %}
                         {% if field_config.display contains "detail_overview" %}
-                            {% assign value = page[field_name] %}
+                            {% include get_field_value.html field_name=field_name %}
+                            {% assign value = field_value %}
                             {% if value or field_config.show_if_empty %}
                                 <dt class="col-sm-4">
                                     {{ field_config.label }}:
@@ -349,4 +352,23 @@ function copyToClipboard(text) {
         document.body.removeChild(textArea);
     });
 }
+
+// Close other popovers when a new one is opened
+document.addEventListener('DOMContentLoaded', function() {
+    const popoverElements = document.querySelectorAll('[data-bs-toggle="popover"]');
+    
+    popoverElements.forEach(function(element) {
+        element.addEventListener('click', function() {
+            // Hide all other popovers
+            popoverElements.forEach(function(otherElement) {
+                if (otherElement !== element) {
+                    const popover = bootstrap.Popover.getInstance(otherElement);
+                    if (popover) {
+                        popover.hide();
+                    }
+                }
+            });
+        });
+    });
+});
 </script>

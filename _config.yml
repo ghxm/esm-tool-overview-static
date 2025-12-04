@@ -37,31 +37,26 @@ default_empty_value: "-"
 # Tool information sections for detail page
 detail_info_sections:
   - name: "Basic Information"
-    fields: ["category", "pricing"]
+    fields: ["metadata.category", "metadata.pricing", "metadata.provider_type", "metadata.provider"]
   - name: "Technical Details" 
-    fields: ["components", "sensor_data_types"]
-  - name: "Metadata"
-    fields: ["license", "last_updated"]
+    fields: ["technical.components", "technical.participant_platform", "technical.license"]
+  - name: "Data Collection"
+    fields: ["data.survey.items", "data.sensor.sensorlog_description", "scheduling.schedule_types"]
 
 
 # Unified field configuration
 fields:
-  name:
-    label: "Name"
+  # Top-level fields
+  title:
+    label: "Tool Name"
     type: "string"
     display: ["table", "detail_overview"]
     sortable: true
     show_if_empty: true
     empty_value: "-"
     
-  description:
-    label: "Description"
-    type: "string"
-    display: []
-    sortable: false
-    show_if_empty: false
-    
-  category:
+  # Metadata section
+  metadata.category:
     label: "Category"
     type: "category"
     display_style: "badge"
@@ -76,9 +71,30 @@ fields:
       title: "Tool Categories"
       content: "• <strong>Single study tool</strong>: Designed to study a single, specific, and narrow research topic<br>• <strong>Platform</strong>: Possibility to create and customize projects for studying any research topic<br>• <strong>Panel-integrated tool</strong>: Offered as part of a (commercial) survey panel, tied to provider's panelists<br>• <strong>Technical framework</strong>: Allows creating custom app/collection infrastructure based on pre-developed modules"
     value_tooltips:
-      "other": "category_other_description"
+      "other": "metadata.tool_category_other_description"
+      
+  metadata.provider_type:
+    label: "Provider Type"
+    type: "category"
+    display: ["table", "detail_info"]
+    sortable: true
+    show_if_empty: false
+    filter:
+      display: true
+      type: "select"
+      label: "Provider Type"
+    popover:
+      title: "Provider Types"
+      content: "• <strong>Academic Research Institution</strong>: Universities and research organizations<br>• <strong>Commercial Company</strong>: For-profit businesses<br>• <strong>Non-Commercial Company</strong>: Non-profit organizations<br>• <strong>Individual Person</strong>: Independent developers or researchers"
+      
+  metadata.provider:
+    label: "Provider"
+    type: "string"
+    display: ["detail_info", "detail_overview"]
+    sortable: true
+    show_if_empty: false
     
-  pricing:
+  metadata.pricing:
     label: "Pricing"
     type: "category"
     display_style: "badge"
@@ -89,9 +105,34 @@ fields:
       display: true
       type: "select"
       label: "Pricing"
-    tooltip: "The cost model for using this tool (Free, Commercial, Freemium, etc.)"
+    popover:
+      title: "Pricing Models"
+      content: "• <strong>Free Of Charge</strong>: Completely free to use<br>• <strong>Commercial</strong>: Requires payment or license<br>• <strong>Freemium</strong>: Basic features free, premium features paid<br>• <strong>Academic License</strong>: Free for academic use, commercial license required otherwise"
+      
+  metadata.target_audience:
+    label: "Target Use"
+    type: "array"
+    display: ["detail_info"]
+    sortable: false
+    show_if_empty: false
+    popover:
+      title: "Target Use Cases"
+      content: "• <strong>Academic</strong>: Research and academic studies<br>• <strong>Commercial</strong>: Business and commercial applications<br>• <strong>Clinical</strong>: Healthcare and clinical settings<br>• <strong>Therapy</strong>: Therapeutic interventions and treatment"
+      
+  metadata.website_url:
+    label: "Website"
+    type: "url"
+    display: ["detail_overview"]
+    show_if_empty: false
     
-  components:
+  metadata.publication_url:
+    label: "Publication"
+    type: "url"
+    display: ["detail_publication"]
+    show_if_empty: false
+    
+  # Technical section
+  technical.components:
     label: "Components"
     type: "array"
     display: ["table", "detail_info"]
@@ -101,79 +142,172 @@ fields:
       display: true
       type: "multiselect-and"
       label: "Components"
-    tooltip: "The main parts or modules that make up this tool"
+    popover:
+      title: "Software Components"
+      content: "• <strong>Interface</strong>: Web-based or desktop interface for tool configuration and data management<br>• <strong>App</strong>: Mobile application for participants<br>• <strong>Backend</strong>: Server infrastructure for data collection and processing<br>• <strong>SDK/API</strong>: Software development kit or programming interface<br>• <strong>Plugin</strong>: Extensions or add-ons for existing platforms"
     value_tooltips:
-      "other": "components_other_description"
-    
-  sensor_data_types:
-    label: "Sensor Data Types"
+      "other": "technical.software_components_other_description"
+      
+  technical.participant_platform:
+    label: "Platform"
     type: "array"
     display: ["table", "detail_info"]
     sortable: false
     show_if_empty: false
     filter:
       display: true
-      type: "multiselect-and"
-      label: "Sensor Types"
-    tooltip: "Types of sensor data this tool can collect or process"
-    
-  maintainer:
-    label: "Maintainer"
-    type: "string"
-    display: ["table", "detail_overview"]
+      type: "multiselect-or"
+      label: "Platform"
+    popover:
+      title: "Participant Platforms"
+      content: "• <strong>Phone</strong>: Smartphones and tablets<br>• <strong>Web</strong>: Web browsers on any device<br>• <strong>Smartwatch</strong>: Wearable devices and smartwatches"
+      
+  technical.participant_phone_os:
+    label: "Mobile OS"
+    type: "array"
+    display: ["table", "detail_info"]
+    sortable: false
+    show_if_empty: false
+    filter:
+      display: true
+      type: "multiselect-or"
+      label: "Mobile OS"
+    popover:
+      title: "Mobile Operating Systems"
+      content: "• <strong>Android</strong>: Google Android mobile OS<br>• <strong>iOS</strong>: Apple iOS mobile OS"
+      
+  technical.license:
+    label: "License"
+    type: "category"
+    display: ["detail_info"]
     sortable: true
     show_if_empty: false
-    tooltip: "The organization or person responsible for maintaining this tool"
-    
-  license:
-    label: "License"
-    type: "string"
+    popover:
+      title: "Software Licenses"
+      content: "• <strong>Permissive open-source</strong>: MIT, Apache, BSD-style licenses allowing commercial use<br>• <strong>Nonpermissive open-source</strong>: GPL, AGPL licenses requiring derivative works to be open source<br>• <strong>Proprietary</strong>: Closed-source commercial license<br>• <strong>Academic</strong>: Free for academic use only"
+      
+  technical.is_maintained:
+    label: "Maintained"
+    type: "category"
     display: ["detail_info"]
     sortable: true
     show_if_empty: false
     filter:
-      display: false
-    tooltip: "The software license under which this tool is distributed"
-    
-  link:
-    label: "Website"
+      display: true
+      type: "select"
+      label: "Maintained"
+    popover:
+      title: "Maintenance Status"
+      content: "Whether the tool is actively maintained and updated by its developers. Important for long-term reliability and security."
+      
+  technical.source_code_url:
+    label: "Source Code"
     type: "url"
     display: ["detail_overview"]
     show_if_empty: false
-    filter:
-      display: false
     
-  last_updated:
-    label: "Last Updated"
-    type: "date"
-    display: ["detail_info"]
-    show_if_empty: false
-    filter:
-      display: false
-    
-  tags:
-    label: "Tags"
+  # Data collection
+  data.survey.items:
+    label: "Survey Items"
     type: "array"
     display: ["detail_info"]
+    sortable: false
     show_if_empty: false
-    filter:
-      display: false
+    popover:
+      title: "Survey Item Types"
+      content: "Types of survey questions and input methods supported by the tool"
       
-  publication_url:
-    label: "Publication"
-    type: "url"
-    display: []
+  data.survey.flow:
+    label: "Survey Flow"
+    type: "array"
+    display: ["detail_info"]
+    sortable: false
+    show_if_empty: false
+    popover:
+      title: "Survey Flow Features"
+      content: "Advanced survey features like skip logic, branching, piping, and conditional display"
+      
+  data.survey.media_types:
+    label: "Media Types"
+    type: "array"
+    display: ["detail_info"]
+    sortable: false
+    show_if_empty: false
+    popover:
+      title: "Supported Media Types"
+      content: "Types of multimedia content that can be included in surveys (images, videos, audio)"
+      
+  data.sensor.sensorlog_description:
+    label: "Sensor Types"
+    type: "array"
+    display: ["detail_info"]
+    sortable: false
+    show_if_empty: false
+    popover:
+      title: "Sensor Data Types"
+      content: "Types of device sensors that can be accessed for data collection (accelerometer, gyroscope, GPS, etc.)"
+      
+  data.sensor.devicelog_description:
+    label: "Device Logs"
+    type: "array"
+    display: ["detail_info"]
+    sortable: false
+    show_if_empty: false
+    popover:
+      title: "Device Log Types"
+      content: "System-level information that can be logged from the device (battery status, network connectivity, etc.)"
+      
+  data.sensor.usagelog_description:
+    label: "Usage Logs"
+    type: "array"
+    display: ["detail_info"]
+    sortable: false
+    show_if_empty: false
+    popover:
+      title: "Usage Log Types"
+      content: "Application and device usage patterns that can be tracked (app usage, screen time, calls, etc.)"
+      
+  # Scheduling
+  scheduling.schedule_types:
+    label: "Schedule Types"
+    type: "array"
+    display: ["detail_info"]
+    sortable: false
     show_if_empty: false
     filter:
-      display: false
-    tooltip: "Link to related research publication or documentation"
-    
-  publication_citation:
-    label: "Citation"
-    type: "string"
-    display: ["detail_publication"]
+      display: true
+      type: "multiselect-or"
+      label: "Schedule Type"
+    popover:
+      title: "Scheduling Methods"
+      content: "• <strong>Time-based</strong>: Scheduled at specific times or intervals<br>• <strong>Event-based</strong>: Triggered by specific events or conditions<br>• <strong>Self-reminded</strong>: Participants can trigger surveys themselves"
+      
+  scheduling.signal:
+    label: "Notification Method"
+    type: "array"
+    display: ["detail_info"]
+    sortable: false
     show_if_empty: false
     filter:
-      display: false
-    tooltip: "Bibliographical reference for this tool's publication"
+      display: true
+      type: "multiselect-or"
+      label: "Notification"
+    popover:
+      title: "Notification Methods"
+      content: "How participants are notified about surveys or data collection tasks"
+      
+  # Other
+  other.documentation_available:
+    label: "Documentation"
+    type: "category"
+    display: ["detail_info"]
+    sortable: true
+    show_if_empty: false
+    filter:
+      display: true
+      type: "select"
+      label: "Documentation"
+    popover:
+      title: "Documentation Availability"
+      content: "Whether comprehensive documentation is available for researchers and developers"
     
