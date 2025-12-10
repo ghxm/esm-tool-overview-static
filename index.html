@@ -63,6 +63,8 @@ title: "Tool Overview"
                                     {% for tool in site.tools %}
                                         {% assign page = tool %}
                                         {% include get_field_value.html field_name=field_name %}
+                                        {% assign debug_value = field_value | inspect %}
+                                        {% comment %}DEBUG: {{ field_name }}: {{ debug_value }}{% endcomment %}
                                         {% unless field_value == nil or field_value == "" %}
                                             {% assign field_values = field_values | push: field_value %}
                                         {% endunless %}
@@ -70,7 +72,8 @@ title: "Tool Overview"
                                     {% assign field_values = field_values | uniq | sort %}
                                     {% for value in field_values %}
                                         {% unless value == nil or value == false or value == "" %}
-                                            <option value="{{ value }}">{{ value }}</option>
+                                            {% include apply_value_label.html value=value field_config=field_config %}
+                                            <option value="{{ value }}">{{ display_value }}</option>
                                         {% endunless %}
                                     {% endfor %}
                                 </select>
@@ -121,6 +124,7 @@ title: "Tool Overview"
                                         {% assign unique_values = all_values | uniq | sort %}
                                         {% for value in unique_values %}
                                             {% if value and value != "" %}
+                                                {% include apply_value_label.html value=value field_config=field_config %}
                                                 <li>
                                                     <label class="dropdown-item" for="{{ field_name }}-{{ forloop.index }}">
                                                         <input type="checkbox" class="form-check-input me-2 multiselect-checkbox" 
@@ -128,7 +132,7 @@ title: "Tool Overview"
                                                                data-field="{{ field_name }}" 
                                                                data-value="{{ value }}"
                                                                data-type="{{ field_config.filter.type }}">
-                                                        {{ value }}
+                                                        {{ display_value }}
                                                     </label>
                                                 </li>
                                             {% endif %}
@@ -187,10 +191,10 @@ title: "Tool Overview"
                                         {% assign field_name = field[0] %}
                                         {% assign field_config = field[1] %}
                                         {% if field_config.display contains "table" %}
-                                        <td class="{{ field_name | replace: '.', '-' }}">
-                                            {% assign page = tool %}
-                                            {% include get_field_value.html field_name=field_name %}
-                                            {% assign value = field_value %}
+                                        {% assign page = tool %}
+                                        {% include get_field_value.html field_name=field_name %}
+                                        {% assign value = field_value %}
+                                        <td class="{{ field_name | replace: '.', '-' }}" data-raw-value="{% if value %}{% if value.first %}{{ value | join: ',' }}{% else %}{{ value }}{% endif %}{% endif %}">
                                             {% if value and value.first %}
                                                 {% assign display_style = field_config.display_style | default: "string" %}
                                                 {% if display_style == 'string' %}
@@ -438,13 +442,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 var filter = activeFilters[field];
                 var cssClassName = field.replace(/\./g, '-');
                 var cell = row.querySelector('.' + cssClassName);
-                var itemValue = cell ? cell.textContent.trim() : '';
-                var itemValues = itemValue.split(',').map(v => v.trim());
+                var rawValue = cell ? cell.getAttribute('data-raw-value') || '' : '';
+                var itemValues = rawValue.split(',').map(v => v.trim()).filter(v => v !== '');
                 var match = false;
                 
                 if (filter.type === 'select') {
                     // Exact match for single-value fields
-                    match = itemValue === filter.values[0].trim();
+                    match = rawValue === filter.values[0].trim();
                 } else if (filter.type === 'multiselect-or') {
                     // OR logic: Check if ANY of the selected values exist in the item
                     match = filter.values.some(function(filterValue) {
