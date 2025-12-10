@@ -63,7 +63,7 @@ title: "Tool Overview"
                                     {% for tool in site.tools %}
                                         {% assign page = tool %}
                                         {% include get_field_value.html field_name=field_name %}
-                                        {% unless field_value_for_comparison == nil or field_value_for_comparison == "" %}
+                                        {% unless field_value == nil or field_value == "" %}
                                             {% assign field_values = field_values | push: field_value %}
                                         {% endunless %}
                                     {% endfor %}

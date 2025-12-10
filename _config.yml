@@ -230,7 +230,7 @@ fields:
       true: "Yes"
       false: "No"
     filter:
-      display: true
+      display: false
       type: "select"
       label: "Maintained"
     popover:
