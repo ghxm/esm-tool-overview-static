@@ -321,6 +321,7 @@ fields:
       
   scheduling.signal:
     label: "Notification Method"
+    display_style: "list"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
