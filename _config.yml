@@ -1,6 +1,6 @@
 # Site settings
-title: "ESM Tool Collection"
-description: "A comprehensive overview of ESM tools"
+title: "EMAtrix"
+description: "A community-based collection of tools for mobile ecological momentary assessments and sensing"
 baseurl: "/esm-tool-overview-static"
 url: "https://ghxm.github.io"
 
