@@ -37,8 +37,16 @@ jobs:
       - name: Install dependencies
         run: bundle install
         
+      - name: Debug base path
+        run: |
+          echo "Base path: ${{ steps.pages.outputs.base_path }}"
+          echo "Site URL: ${{ steps.pages.outputs.origin }}"
+          echo "Host: ${{ steps.pages.outputs.host }}"
+          
       - name: Build with Jekyll
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" --trace
+        run: |
+          echo "Building Jekyll site with trace and verbose output..."
+          bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" --trace --verbose
         env:
           JEKYLL_ENV: production
           
