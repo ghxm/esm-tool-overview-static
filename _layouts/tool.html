@@ -67,6 +67,7 @@ layout: default
                                     </dt>
                                     <dd class="col-sm-9">
                                         {% if value and value.first %}
+                                            {% comment %} Arrays {% endcomment %}
                                             {% assign display_style = field_config.display_style | default: "string" %}
                                             {% if display_style == 'string' %}
                                                 {% comment %} Display as comma-separated string {% endcomment %}
@@ -108,9 +109,11 @@ layout: default
                                                 <span class="badge bg-{{ item_color }} me-1">{{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
                                                 {% endfor %}
                                             {% endif %}
-                                        {% else %}
+                                        {% elsif value != nil %}
+                                            {% if value != "" or value == true or value == false %}
+                                            {% comment %} Single values (including booleans) {% endcomment %}
                                             {% assign display_style = field_config.display_style | default: "string" %}
-                                            {% if display_style == 'badge' and value %}
+                                            {% if display_style == 'badge' %}
                                             {% comment %} Apply value label transformation {% endcomment %}
                                             {% include apply_value_label.html value=value field_config=field_config %}
                                             {% assign display_item = display_value %}
@@ -147,6 +150,7 @@ layout: default
                                                 {% endfor %}
                                             {% endif %}
                                             {{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}
+                                            {% endif %}
                                             {% endif %}
                                         {% elsif field_config.show_if_empty %}
                                             <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
