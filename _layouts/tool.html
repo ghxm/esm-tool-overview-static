@@ -39,11 +39,13 @@ layout: default
                                 {% assign value = field_value %}
                                 {% assign has_value = false %}
                                 {% if value and value != "" and value != nil %}
-                                    {% if field_config.type == 'array' %}
+                                    {% if value.first %}
+                                        {% comment %} Array - check if it has items {% endcomment %}
                                         {% if value.size > 0 %}
                                             {% assign has_value = true %}
                                         {% endif %}
                                     {% else %}
+                                        {% comment %} Single value {% endcomment %}
                                         {% assign has_value = true %}
                                     {% endif %}
                                 {% endif %}
@@ -215,7 +217,7 @@ layout: default
                                     {% endif %}
                                 </dt>
                                 <dd class="col-sm-9">
-                                    {% if field_config.type == 'array' and value and value.size > 0 %}
+                                    {% if value and value.first and value.size > 0 %}
                                         {% for item in value %}
                                             {% comment %} Apply value label transformation {% endcomment %}
                                             {% include apply_value_label.html value=item field_config=field_config %}
@@ -232,9 +234,11 @@ layout: default
                                         {{ value | date: "%Y-%m-%d" }}
                                     {% elsif field_config.display_style == 'badge' and value %}
                                         {% assign badge_color = field_config.badge_color | default: "primary" %}
-                                        <span class="badge bg-{{ badge_color }}">{{ value }}</span>
+                                        {% include apply_value_label.html value=value field_config=field_config %}
+                                        <span class="badge bg-{{ badge_color }}">{{ display_value }}</span>
                                     {% elsif value %}
-                                        {{ value }}
+                                        {% include apply_value_label.html value=value field_config=field_config %}
+                                        {{ display_value }}
                                     {% elsif field_config.show_if_empty %}
                                         <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
                                     {% endif %}
@@ -339,9 +343,11 @@ layout: default
                                         </a>
                                     {% elsif field_config.display_style == 'badge' and value %}
                                         {% assign badge_color = field_config.badge_color | default: "primary" %}
-                                        <span class="badge bg-{{ badge_color }}">{{ value }}</span>
+                                        {% include apply_value_label.html value=value field_config=field_config %}
+                                        <span class="badge bg-{{ badge_color }}">{{ display_value }}</span>
                                     {% elsif value %}
-                                        {{ value }}
+                                        {% include apply_value_label.html value=value field_config=field_config %}
+                                        {{ display_value }}
                                     {% elsif field_config.show_if_empty %}
                                         <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
                                     {% endif %}

@@ -7,7 +7,8 @@
   {%- for label_pair in include.field_config.value_labels -%}
     {%- assign key_str = label_pair[0] | append: "" -%}
     {%- assign key_lower = key_str | downcase -%}
-    {%- if key_lower == value_lower -%}
+    {%- comment -%}Also compare original values for exact boolean matches{%- endcomment -%}
+    {%- if key_lower == value_lower or label_pair[0] == include.value -%}
       {%- assign display_value = label_pair[1] -%}
       {%- break -%}
     {%- endif -%}

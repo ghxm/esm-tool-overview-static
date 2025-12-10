@@ -1,6 +1,6 @@
 # Site settings
 title: "EMAtrix"
-description: "A community-based collection of tools for mobile ecological momentary assessments and sensing"
+description: "A community-based collection of tools for mobile ecological momentary assessments and sensing."
 baseurl: "/esm-tool-overview-static"
 url: "https://ghxm.github.io"
 
@@ -77,7 +77,7 @@ fields:
       
   metadata.provider_type:
     label: "Provider Type"
-    display_style: "badge"
+    #display_style: "badge"
     type: "category"
     display: ["table", "detail_info"]
     sortable: true
@@ -101,7 +101,7 @@ fields:
   metadata.developer_type:
     label: "Developer Type"
     type: "category"
-    display_style: "badge"
+    #display_style: "badge"
     display: [ "detail_info" ]
     sortable: true
     show_if_empty: false
@@ -201,6 +201,9 @@ fields:
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
+    value_labels:
+      "ios": "iOS"
+      "android": "Android"
     filter:
       display: false
       type: "multiselect-or"

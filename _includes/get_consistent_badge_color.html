@@ -2,56 +2,46 @@
 {%- assign base_color = include.base_color | default: "primary" -%}
 {%- assign value = include.value | downcase | strip -%}
 
-{%- comment -%}Better hash using multiple character positions{%- endcomment -%}
+{%- comment -%}Improved hash using string analysis{%- endcomment -%}
 {%- assign value_length = value | size -%}
-{%- assign char1 = value | slice: 0, 1 -%}
-{%- assign char2 = value | slice: 1, 1 -%}
-{%- assign char3 = value | slice: 2, 1 -%}
-{%- assign last_char = value | slice: -1, 1 -%}
 
-{%- comment -%}Convert characters to numbers{%- endcomment -%}
-{%- assign alphabet = "abcdefghijklmnopqrstuvwxyz" -%}
-{%- assign numbers = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26" | split: "," -%}
+{%- comment -%}Calculate hash based on character codes and positions{%- endcomment -%}
+{%- assign hash = 0 -%}
+{%- assign alphabet = "abcdefghijklmnopqrstuvwxyz0123456789 -" -%}
 
-{%- assign hash = value_length -%}
-
-{%- comment -%}Add position-weighted character values{%- endcomment -%}
-{%- for i in (0..25) -%}
-  {%- assign letter = alphabet | slice: i, 1 -%}
-  {%- assign num = numbers[i] -%}
-  
-  {%- if char1 == letter -%}
-    {%- assign hash = hash | plus: num | times: 3 -%}
-  {%- endif -%}
-  {%- if char2 == letter -%}
-    {%- assign hash = hash | plus: num | times: 2 -%}
-  {%- endif -%}
-  {%- if char3 == letter -%}
-    {%- assign hash = hash | plus: num -%}
-  {%- endif -%}
-  {%- if last_char == letter -%}
-    {%- assign hash = hash | plus: num | times: 5 -%}
+{%- comment -%}Process each character with position weight{%- endcomment -%}
+{%- for i in (0..value_length) -%}
+  {%- assign char = value | slice: i, 1 -%}
+  {%- assign char_pos = alphabet | split: "" | index: char -%}
+  {%- if char_pos -%}
+    {%- assign position_weight = i | plus: 1 -%}
+    {%- assign char_contribution = char_pos | times: position_weight | times: 17 -%}
+    {%- assign hash = hash | plus: char_contribution -%}
   {%- endif -%}
 {%- endfor -%}
 
-{%- assign color_index = hash | modulo: 6 -%}
+{%- comment -%}Add length factor for better distribution{%- endcomment -%}
+{%- assign hash = hash | plus: value_length | times: 23 -%}
 
-{%- comment -%}Define more diverse color variants for each base color{%- endcomment -%}
+{%- comment -%}Use larger color pool and better distribution{%- endcomment -%}
+{%- assign color_index = hash | modulo: 12 -%}
+
+{%- comment -%}Define diverse color variants with 12 options{%- endcomment -%}
 {%- case base_color -%}
   {%- when 'primary' -%}
-    {%- assign colors = 'primary,info,success,warning,secondary,danger' | split: ',' -%}
+    {%- assign colors = 'primary,info,success,warning,danger,secondary,dark,primary,info,success,warning,danger' | split: ',' -%}
   {%- when 'success' -%}
-    {%- assign colors = 'success,primary,info,success,primary,info' | split: ',' -%}
+    {%- assign colors = 'success,primary,info,warning,secondary,dark,success,primary,info,warning,secondary,dark' | split: ',' -%}
   {%- when 'info' -%}
-    {%- assign colors = 'info,primary,secondary,info,primary,secondary' | split: ',' -%}
+    {%- assign colors = 'info,primary,success,secondary,warning,danger,info,primary,success,secondary,warning,danger' | split: ',' -%}
   {%- when 'warning' -%}
-    {%- assign colors = 'warning,danger,secondary,warning,danger,secondary' | split: ',' -%}
+    {%- assign colors = 'warning,danger,secondary,primary,info,success,warning,danger,secondary,primary,info,success' | split: ',' -%}
   {%- when 'danger' -%}
-    {%- assign colors = 'danger,warning,secondary,danger,warning,secondary' | split: ',' -%}
+    {%- assign colors = 'danger,warning,secondary,dark,primary,info,danger,warning,secondary,dark,primary,info' | split: ',' -%}
   {%- when 'secondary' -%}
-    {%- assign colors = 'secondary,dark,primary,secondary,dark,primary' | split: ',' -%}
+    {%- assign colors = 'secondary,dark,primary,info,success,warning,secondary,dark,primary,info,success,warning' | split: ',' -%}
   {%- else -%}
-    {%- assign colors = 'primary,info,success,warning,danger,secondary' | split: ',' -%}
+    {%- assign colors = 'primary,info,success,warning,danger,secondary,dark,primary,info,success,warning,danger' | split: ',' -%}
 {%- endcase -%}
 
 {%- assign consistent_color = colors[color_index] -%}
