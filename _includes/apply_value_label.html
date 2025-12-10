@@ -1,0 +1,18 @@
+{%- comment -%}Apply value labels and titlecase to a field value{%- endcomment -%}
+{%- assign display_value = include.value -%}
+{%- if include.field_config.value_labels -%}
+  {%- comment -%}Convert everything to strings for safe comparison{%- endcomment -%}
+  {%- assign value_str = include.value | append: "" -%}
+  {%- assign value_lower = value_str | downcase -%}
+  {%- for label_pair in include.field_config.value_labels -%}
+    {%- assign key_str = label_pair[0] | append: "" -%}
+    {%- assign key_lower = key_str | downcase -%}
+    {%- if key_lower == value_lower -%}
+      {%- assign display_value = label_pair[1] -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if include.field_config.titlecase and display_value -%}
+  {%- assign display_value = display_value | capitalize -%}
+{%- endif -%}
