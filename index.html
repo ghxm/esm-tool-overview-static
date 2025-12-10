@@ -198,8 +198,8 @@ title: "Tool Overview"
                                         <td class="{{ field_name | replace: '.', '-' }}" data-raw-value="{% if value %}{% if value.first %}{{ value | join: ',' }}{% else %}{{ value }}{% endif %}{% endif %}">
                                             {% if value and value.first %}
                                                 {% assign display_style = field_config.display_style | default: "string" %}
-                                                {% if display_style == 'string' %}
-                                                    {% comment %} Display as comma-separated string {% endcomment %}
+                                                {% if display_style == 'string' or display_style == 'list' %}
+                                                    {% comment %} Display as comma-separated string (same for table) {% endcomment %}
                                                     {% assign display_items = '' %}
                                                     {% for item in value %}
                                                         {% include apply_value_label.html value=item field_config=field_config %}

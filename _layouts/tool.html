@@ -83,6 +83,14 @@ layout: default
                                                     {% endif %}
                                                 {% endfor %}
                                                 {{ display_items }}
+                                            {% elsif display_style == 'list' %}
+                                                {% comment %} Display as bulleted list {% endcomment %}
+                                                <ul class="mb-0">
+                                                    {% for item in value %}
+                                                        {% include apply_value_label.html value=item field_config=field_config %}
+                                                        <li>{{ display_value }}</li>
+                                                    {% endfor %}
+                                                </ul>
                                             {% else %}
                                                 {% comment %} Display as badges (default) {% endcomment %}
                                                 {% for item in value %}
@@ -218,18 +226,42 @@ layout: default
                                 </dt>
                                 <dd class="col-sm-9">
                                     {% if value and value.first and value.size > 0 %}
-                                        {% for item in value %}
-                                            {% comment %} Apply value label transformation {% endcomment %}
-                                            {% include apply_value_label.html value=item field_config=field_config %}
-                                            {% assign display_item = display_value %}
-                                            
-                                            {% comment %} Get consistent color for this item {% endcomment %}
-                                            {% assign base_badge_color = field_config.badge_color | default: "primary" %}
-                                            {% include get_consistent_badge_color.html value=item base_color=base_badge_color %}
-                                            {% assign item_color = consistent_color %}
-                                            
-                                            <span class="badge bg-{{ item_color }} me-1">{{ display_item }}</span>
-                                        {% endfor %}
+                                        {% assign display_style = field_config.display_style | default: "badge" %}
+                                        {% if display_style == 'string' %}
+                                            {% comment %} Display as comma-separated string {% endcomment %}
+                                            {% assign display_items = '' %}
+                                            {% for item in value %}
+                                                {% include apply_value_label.html value=item field_config=field_config %}
+                                                {% if forloop.first %}
+                                                    {% assign display_items = display_value %}
+                                                {% else %}
+                                                    {% assign display_items = display_items | append: ', ' | append: display_value %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            {{ display_items }}
+                                        {% elsif display_style == 'list' %}
+                                            {% comment %} Display as bulleted list {% endcomment %}
+                                            <ul class="mb-0">
+                                                {% for item in value %}
+                                                    {% include apply_value_label.html value=item field_config=field_config %}
+                                                    <li>{{ display_value }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            {% comment %} Display as badges (default) {% endcomment %}
+                                            {% for item in value %}
+                                                {% comment %} Apply value label transformation {% endcomment %}
+                                                {% include apply_value_label.html value=item field_config=field_config %}
+                                                {% assign display_item = display_value %}
+                                                
+                                                {% comment %} Get consistent color for this item {% endcomment %}
+                                                {% assign base_badge_color = field_config.badge_color | default: "primary" %}
+                                                {% include get_consistent_badge_color.html value=item base_color=base_badge_color %}
+                                                {% assign item_color = consistent_color %}
+                                                
+                                                <span class="badge bg-{{ item_color }} me-1">{{ display_item }}</span>
+                                            {% endfor %}
+                                        {% endif %}
                                     {% elsif field_config.type == 'date' and value %}
                                         {{ value | date: "%Y-%m-%d" }}
                                     {% elsif field_config.display_style == 'badge' and value %}

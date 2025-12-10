@@ -249,7 +249,8 @@ fields:
   # Data collection
   data.survey.items:
     label: "Survey Items"
-    display: ["detail_info"]
+    display_style: "list"
+    display: ["table", "detail_info"]
     sortable: false
     show_if_empty: false
     titlecase: true
