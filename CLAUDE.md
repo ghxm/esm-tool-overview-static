@@ -101,6 +101,8 @@ Key configuration concepts:
 - **Nested Field Names:** Use dot notation (e.g., `metadata.category`, `technical.components`)
 - **Value Labels:** Custom display labels via `value_labels` config option
 - **Auto Title Case:** Automatic title casing with `titlecase: true` option
+- **Badge Colors:** Custom badge colors via `badge_color` config option
+- **Consistent Array Badge Colors:** Arrays generate consistent color variants per value based on the base badge color
 - **Popover Descriptions:** Rich help text via `popover.title` and `popover.content`
 - **Publication Fields:** Separate `publication_url` and `publication_citation` fields
 - **Automatic Sectioning:** Uncategorized `detail_info` fields appear in "Other" section

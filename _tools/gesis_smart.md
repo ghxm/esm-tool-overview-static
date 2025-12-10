@@ -1,29 +1,29 @@
 ---
 layout: tool
-title: "Samply"
+title: "GESIS SMART"
 metadata:
-  name: "Samply"
+  name: "GESIS SMART"
   category: "platform"
   tool_category_other_description: ""
-  provider_type: "individual person"
-  provider: "Yury Shevchenko"
-  developer_type: "individual person"
-  developer: "Yury Shevchenko"
+  provider_type: "non-commercial company"
+  provider: "GESIS Leibniz-Institut für Sozialwissenschaften"
+  developer_type: "non-commercial company"
+  developer: "GESIS Leibniz-Institut für Sozialwissenschaften"
   target_audience: "academic"
   pricing: "free"
-  website_url: "https://samply.js.org/"
+  website_url: "https://www.gesis.org/gesis-appkit"
   documentation_url: ""
-  publication_url: "https://doi.org/10.3758/s13428-020-01527-9"
+  publication_url: ""
   other_url: ""
 technical:
-  source_code_url: "https://github.com/Yury-Shevchenko/samply"
+  source_code_url: ""
   components: 
     - "interface"
     - "app"
   software_components_other_description: ""
-  hosting: ""
-  server_location: ""
-  license: "permissive open-source"
+  hosting: "cloud-based"
+  server_location: "eu"
+  license: "nonpermissive open-source"
   participant_platform: "phone"
   participant_phone_os: 
     - "android"
@@ -33,26 +33,32 @@ technical:
   is_maintained: true
   contribution: 
     - "reporting bugs"
-    - "contributing code"
+    - "suggesting new features"
 data:
   sensor:
     sensorlog_description: ""
     devicelog_description: ""
     usagelog_description: ""
   survey:
-    items: ""
+    items: 
+      - "free-entry questions"
+      - "information"
+      - "likert scales"
+      - "multiple-choice questions"
+      - "photo upload"
+      - "single-choice questions"
     input_validation: ""
-    flow: ""
-    media_types: ""
+    flow: "termination"
+    media_types: "images"
 scheduling:
   schedule_types: "time-based"
   schedules_time_based_description: 
     - "at fixed intervals"
     - "at random intervals"
-    - "other"
+    - "on registration"
   signal: "via push-notification"
 other:
-  accessibility: ""
-  documentation_available: false
+  accessibility: "dark mode"
+  documentation_available: true
   consultation_available: false
 ---

@@ -102,7 +102,13 @@ def parse_mapping(mapping_str=None, mapping_file=None):
     return mapping
 
 
-def format_yaml_value(value, field_name=None, indent_level=0):
+def should_be_array_heuristic(value):
+    """Heuristic to determine if a comma-separated value should be an array."""
+    items = [item.strip() for item in value.split(',') if item.strip()]
+    return len(items) > 1 and all(len(item) < 50 for item in items)
+
+
+def format_yaml_value(value, field_name=None, indent_level=0, array_fields=None):
     """Format a value for YAML frontmatter"""
     if value is None or value == '':
         return '""'
@@ -113,13 +119,23 @@ def format_yaml_value(value, field_name=None, indent_level=0):
     # Calculate indentation
     indent = "  " * indent_level
     
-    # Handle arrays (semicolon-separated values)
+    # Check if this field should be treated as an array
+    force_array = array_fields and field_name in array_fields
+    
+    # Handle arrays (semicolon-separated or comma-separated values)
     if ';' in value:
         items = [item.strip() for item in value.split(';') if item.strip()]
         if items:
             return '\n' + '\n'.join(f'{indent}  - "{item}"' for item in items)
         else:
             return '[]'
+    elif ',' in value and (force_array or should_be_array_heuristic(value)):
+        items = [item.strip() for item in value.split(',') if item.strip()]
+        if items:
+            return '\n' + '\n'.join(f'{indent}  - "{item}"' for item in items)
+        elif force_array:
+            return '[]'
+        # Otherwise treat as regular string
     
     # Handle boolean-like values
     if value.lower() in ('true', 'false'):
@@ -162,7 +178,7 @@ def build_nested_yaml(field_mappings, row):
     return yaml_data
 
 
-def yaml_data_to_lines(data, indent_level=0):
+def yaml_data_to_lines(data, indent_level=0, array_fields=None):
     """Convert nested dict to YAML lines"""
     lines = []
     indent = "  " * indent_level
@@ -171,10 +187,10 @@ def yaml_data_to_lines(data, indent_level=0):
         if isinstance(value, dict):
             # Nested object
             lines.append(f"{indent}{key}:")
-            lines.extend(yaml_data_to_lines(value, indent_level + 1))
+            lines.extend(yaml_data_to_lines(value, indent_level + 1, array_fields))
         else:
             # Simple value
-            formatted_value = format_yaml_value(value, key, indent_level)
+            formatted_value = format_yaml_value(value, key, indent_level, array_fields=array_fields)
             lines.append(f"{indent}{key}: {formatted_value}")
     
     return lines
@@ -182,7 +198,7 @@ def yaml_data_to_lines(data, indent_level=0):
 
 def convert_csv_to_tools(csv_file, output_dir="_tools", filename_field="name", 
                         column_mapping=None, mapping_file=None, content_field=None,
-                        ignore_columns=None, ignore_unmapped=False, dry_run=False, verbose=False, existing_action="ignore"):
+                        ignore_columns=None, ignore_unmapped=False, array_fields=None, dry_run=False, verbose=False, existing_action="ignore"):
     """Convert CSV file to Jekyll tool markdown files"""
     
     if not os.path.exists(csv_file):
@@ -199,6 +215,11 @@ def convert_csv_to_tools(csv_file, output_dir="_tools", filename_field="name",
     ignore_set = set()
     if ignore_columns:
         ignore_set = set(col.strip() for col in ignore_columns.split(','))
+    
+    # Parse array fields 
+    array_fields_set = set()
+    if array_fields:
+        array_fields_set = set(field.strip() for field in array_fields.split(','))
     
     # Ensure output directory exists
     output_path = Path(output_dir)
@@ -334,13 +355,13 @@ def convert_csv_to_tools(csv_file, output_dir="_tools", filename_field="name",
                     for csv_col, yaml_fields in simple_field_mappings.items():
                         csv_value = row[csv_col]
                         for yaml_field in yaml_fields:
-                            formatted_value = format_yaml_value(csv_value, yaml_field)
+                            formatted_value = format_yaml_value(csv_value, yaml_field, array_fields=array_fields_set)
                             yaml_lines.append(f"{yaml_field}: {formatted_value}")
                     
                     # Process nested fields
                     if nested_field_mappings:
                         nested_data = build_nested_yaml(nested_field_mappings, row)
-                        nested_lines = yaml_data_to_lines(nested_data)
+                        nested_lines = yaml_data_to_lines(nested_data, array_fields=array_fields_set)
                         yaml_lines.extend(nested_lines)
                     
                     yaml_lines.append("---")
@@ -420,6 +441,8 @@ def main():
                        help='Comma-separated list of CSV columns to ignore completely')
     parser.add_argument('--ignore-unmapped', '-u', action='store_true',
                        help='Ignore columns that are not explicitly mapped (only process mapped columns)')
+    parser.add_argument('--array-fields', '-a',
+                       help='Comma-separated list of YAML field names that should always be arrays (e.g. "metadata.pricing,technical.components")')
     parser.add_argument('--existing', '-e', choices=['ignore', 'overwrite', 'amend'],
                        default='ignore', help='Action for existing files (default: ignore)')
     parser.add_argument('--dry-run', '-n', action='store_true',
@@ -438,6 +461,7 @@ def main():
         content_field=args.content_field,
         ignore_columns=args.ignore_columns,
         ignore_unmapped=args.ignore_unmapped,
+        array_fields=args.array_fields,
         dry_run=args.dry_run,
         verbose=args.verbose,
         existing_action=args.existing

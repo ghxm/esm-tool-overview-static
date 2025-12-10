@@ -1,25 +1,25 @@
 ---
 layout: tool
-title: "Samply"
+title: "iPromptU"
 metadata:
-  name: "Samply"
-  category: "platform"
-  tool_category_other_description: ""
-  provider_type: "individual person"
-  provider: "Yury Shevchenko"
-  developer_type: "individual person"
-  developer: "Yury Shevchenko"
-  target_audience: "academic"
+  name: "iPromptU"
+  category: "Other"
+  tool_category_other_description: 
+    - "prompting app with customizable prompts"
+    - "but otherwise pretty narrow features"
+  provider_type: "non-commercial company"
+  provider: "Cognitive Behavioral Institute of Albuquerque"
+  developer_type: ""
+  developer: ""
+  target_audience: "therapy"
   pricing: "free"
-  website_url: "https://samply.js.org/"
+  website_url: ""
   documentation_url: ""
-  publication_url: "https://doi.org/10.3758/s13428-020-01527-9"
+  publication_url: ""
   other_url: ""
 technical:
-  source_code_url: "https://github.com/Yury-Shevchenko/samply"
-  components: 
-    - "interface"
-    - "app"
+  source_code_url: ""
+  components: "app"
   software_components_other_description: ""
   hosting: ""
   server_location: ""
@@ -30,27 +30,26 @@ technical:
     - "ios"
   participant_watch_os: ""
   participant_install_source: "Store"
-  is_maintained: true
-  contribution: 
-    - "reporting bugs"
-    - "contributing code"
+  is_maintained: false
+  contribution: ""
 data:
   sensor:
     sensorlog_description: ""
     devicelog_description: ""
     usagelog_description: ""
   survey:
-    items: ""
+    items: "free-entry questions"
     input_validation: ""
-    flow: ""
+    flow: "randomization"
     media_types: ""
 scheduling:
-  schedule_types: "time-based"
+  schedule_types: 
+    - "self-reminded"
+    - "time-based"
   schedules_time_based_description: 
     - "at fixed intervals"
     - "at random intervals"
-    - "other"
-  signal: "via push-notification"
+  signal: ""
 other:
   accessibility: ""
   documentation_available: false

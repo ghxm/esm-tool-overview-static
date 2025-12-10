@@ -37,7 +37,17 @@ layout: default
                             {% if field_config.display contains "detail_info" %}
                                 {% include get_field_value.html field_name=field_name %}
                                 {% assign value = field_value %}
-                                {% if value or field_config.show_if_empty %}
+                                {% assign has_value = false %}
+                                {% if value and value != "" and value != nil %}
+                                    {% if field_config.type == 'array' %}
+                                        {% if value.size > 0 %}
+                                            {% assign has_value = true %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% assign has_value = true %}
+                                    {% endif %}
+                                {% endif %}
+                                {% if has_value or field_config.show_if_empty %}
                                     <dt class="col-sm-3 small">
                                         {{ field_config.label }}:
                                         {% if field_config.tooltip %}
@@ -56,11 +66,31 @@ layout: default
                                         {% endif %}
                                     </dt>
                                     <dd class="col-sm-9">
-                                        {% if field_config.type == 'array' and value and value.size > 0 %}
-                                            {% for item in value %}
+                                        {% if value and value.first %}
+                                            {% assign display_style = field_config.display_style | default: "string" %}
+                                            {% if display_style == 'string' %}
+                                                {% comment %} Display as comma-separated string {% endcomment %}
+                                                {% assign display_items = '' %}
+                                                {% for item in value %}
+                                                    {% include apply_value_label.html value=item field_config=field_config %}
+                                                    {% if forloop.first %}
+                                                        {% assign display_items = display_value %}
+                                                    {% else %}
+                                                        {% assign display_items = display_items | append: ', ' | append: display_value %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {{ display_items }}
+                                            {% else %}
+                                                {% comment %} Display as badges (default) {% endcomment %}
+                                                {% for item in value %}
                                                 {% comment %} Apply value label transformation {% endcomment %}
                                                 {% include apply_value_label.html value=item field_config=field_config %}
                                                 {% assign display_item = display_value %}
+                                                
+                                                {% comment %} Get consistent color for this item {% endcomment %}
+                                                {% assign base_badge_color = field_config.badge_color | default: "primary" %}
+                                                {% include get_consistent_badge_color.html value=item base_color=base_badge_color %}
+                                                {% assign item_color = consistent_color %}
                                                 
                                                 {% comment %} Check for value tooltip for this array item {% endcomment %}
                                                 {% assign tooltip_field = nil %}
@@ -75,19 +105,12 @@ layout: default
                                                     {% endfor %}
                                                 {% endif %}
                                                 
-                                                {% if field_name == 'components' %}
-                                                    <span class="badge bg-success me-1">{{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
-                                                {% elsif field_name == 'sensor_data_types' %}
-                                                    <span class="badge bg-info me-1">{{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
-                                                {% elsif field_name == 'tags' %}
-                                                    <span class="badge bg-secondary me-1">{{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
-                                                {% else %}
-                                                    <span class="badge bg-primary me-1">{{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% elsif field_config.type == 'date' and value %}
-                                            {{ value | date: "%B %d, %Y" }}
-                                        {% elsif field_config.display_style == 'badge' and value %}
+                                                <span class="badge bg-{{ item_color }} me-1">{{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% assign display_style = field_config.display_style | default: "string" %}
+                                            {% if display_style == 'badge' and value %}
                                             {% comment %} Apply value label transformation {% endcomment %}
                                             {% include apply_value_label.html value=value field_config=field_config %}
                                             {% assign display_item = display_value %}
@@ -104,8 +127,9 @@ layout: default
                                                     {% endif %}
                                                 {% endfor %}
                                             {% endif %}
-                                            <span class="badge bg-primary">{{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
-                                        {% elsif value %}
+                                            {% assign badge_color = field_config.badge_color | default: "primary" %}
+                                            <span class="badge bg-{{ badge_color }}">{{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}</span>
+                                            {% elsif value %}
                                             {% comment %} Apply value label transformation {% endcomment %}
                                             {% include apply_value_label.html value=value field_config=field_config %}
                                             {% assign display_item = display_value %}
@@ -123,6 +147,7 @@ layout: default
                                                 {% endfor %}
                                             {% endif %}
                                             {{ display_item }}{% if tooltip_field %}{% assign explanation = page[tooltip_field] %}{% if explanation %} <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="{{ explanation }}"></i>{% endif %}{% endif %}
+                                            {% endif %}
                                         {% elsif field_config.show_if_empty %}
                                             <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
                                         {% endif %}
@@ -157,7 +182,17 @@ layout: default
                             {% assign field_config = site.fields[field_name] %}
                             {% include get_field_value.html field_name=field_name %}
                             {% assign value = field_value %}
-                            {% if value or field_config.show_if_empty %}
+                            {% assign has_value = false %}
+                            {% if value and value != "" and value != nil %}
+                                {% if field_config.type == 'array' %}
+                                    {% if value.size > 0 %}
+                                        {% assign has_value = true %}
+                                    {% endif %}
+                                {% else %}
+                                    {% assign has_value = true %}
+                                {% endif %}
+                            {% endif %}
+                            {% if has_value or field_config.show_if_empty %}
                                 <dt class="col-sm-3 small">
                                     {{ field_config.label }}:
                                     {% if field_config.tooltip %}
@@ -178,20 +213,22 @@ layout: default
                                 <dd class="col-sm-9">
                                     {% if field_config.type == 'array' and value and value.size > 0 %}
                                         {% for item in value %}
-                                            {% if field_name == 'components' %}
-                                                <span class="badge bg-success me-1">{{ item }}</span>
-                                            {% elsif field_name == 'sensor_data_types' %}
-                                                <span class="badge bg-info me-1">{{ item }}</span>
-                                            {% elsif field_name == 'tags' %}
-                                                <span class="badge bg-secondary me-1">{{ item }}</span>
-                                            {% else %}
-                                                <span class="badge bg-primary me-1">{{ item }}</span>
-                                            {% endif %}
+                                            {% comment %} Apply value label transformation {% endcomment %}
+                                            {% include apply_value_label.html value=item field_config=field_config %}
+                                            {% assign display_item = display_value %}
+                                            
+                                            {% comment %} Get consistent color for this item {% endcomment %}
+                                            {% assign base_badge_color = field_config.badge_color | default: "primary" %}
+                                            {% include get_consistent_badge_color.html value=item base_color=base_badge_color %}
+                                            {% assign item_color = consistent_color %}
+                                            
+                                            <span class="badge bg-{{ item_color }} me-1">{{ display_item }}</span>
                                         {% endfor %}
                                     {% elsif field_config.type == 'date' and value %}
                                         {{ value | date: "%Y-%m-%d" }}
                                     {% elsif field_config.display_style == 'badge' and value %}
-                                        <span class="badge bg-primary">{{ value }}</span>
+                                        {% assign badge_color = field_config.badge_color | default: "primary" %}
+                                        <span class="badge bg-{{ badge_color }}">{{ value }}</span>
                                     {% elsif value %}
                                         {{ value }}
                                     {% elsif field_config.show_if_empty %}
@@ -233,7 +270,17 @@ layout: default
                         {% if field_config.display contains "detail_overview" %}
                             {% include get_field_value.html field_name=field_name %}
                             {% assign value = field_value %}
-                            {% if value or field_config.show_if_empty %}
+                            {% assign has_value = false %}
+                            {% if value and value != "" and value != nil %}
+                                {% if field_config.type == 'array' %}
+                                    {% if value.size > 0 %}
+                                        {% assign has_value = true %}
+                                    {% endif %}
+                                {% else %}
+                                    {% assign has_value = true %}
+                                {% endif %}
+                            {% endif %}
+                            {% if has_value or field_config.show_if_empty %}
                                 <dt class="col-sm-4 small">
                                     {{ field_config.label }}:
                                     {% if field_config.tooltip %}
@@ -287,7 +334,8 @@ layout: default
                                             {{ short_url }} ↗
                                         </a>
                                     {% elsif field_config.display_style == 'badge' and value %}
-                                        <span class="badge bg-primary">{{ value }}</span>
+                                        {% assign badge_color = field_config.badge_color | default: "primary" %}
+                                        <span class="badge bg-{{ badge_color }}">{{ value }}</span>
                                     {% elsif value %}
                                         {{ value }}
                                     {% elsif field_config.show_if_empty %}

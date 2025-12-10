@@ -1,29 +1,31 @@
 ---
 layout: tool
-title: "Samply"
+title: "Project MyCap"
 metadata:
-  name: "Samply"
+  name: "Project MyCap"
   category: "platform"
   tool_category_other_description: ""
-  provider_type: "individual person"
-  provider: "Yury Shevchenko"
-  developer_type: "individual person"
-  developer: "Yury Shevchenko"
+  provider_type: "academic research institution"
+  provider: "Vanderbilt University Medical Center"
+  developer_type: "academic research institution"
+  developer: 
+    - "Vanderbilt University Medical Center"
+    - "RED Cap"
   target_audience: "academic"
-  pricing: "free"
-  website_url: "https://samply.js.org/"
+  pricing: ""
+  website_url: "https://projectmycap.org/"
   documentation_url: ""
-  publication_url: "https://doi.org/10.3758/s13428-020-01527-9"
+  publication_url: ""
   other_url: ""
 technical:
-  source_code_url: "https://github.com/Yury-Shevchenko/samply"
+  source_code_url: ""
   components: 
     - "interface"
     - "app"
   software_components_other_description: ""
-  hosting: ""
+  hosting: "on premise"
   server_location: ""
-  license: "permissive open-source"
+  license: "nonpermissive open-source"
   participant_platform: "phone"
   participant_phone_os: 
     - "android"
@@ -31,9 +33,7 @@ technical:
   participant_watch_os: ""
   participant_install_source: "Store"
   is_maintained: true
-  contribution: 
-    - "reporting bugs"
-    - "contributing code"
+  contribution: "reporting bugs"
 data:
   sensor:
     sensorlog_description: ""
@@ -45,14 +45,18 @@ data:
     flow: ""
     media_types: ""
 scheduling:
-  schedule_types: "time-based"
+  schedule_types: 
+    - "time-based"
+    - "event-based"
   schedules_time_based_description: 
     - "at fixed intervals"
     - "at random intervals"
-    - "other"
-  signal: "via push-notification"
+  signal: ""
 other:
-  accessibility: ""
-  documentation_available: false
-  consultation_available: false
+  accessibility: 
+    - "colour"
+    - "icons"
+    - "language"
+  documentation_available: true
+  consultation_available: true
 ---

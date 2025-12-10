@@ -1,29 +1,29 @@
 ---
 layout: tool
-title: "Samply"
+title: "Opinio"
 metadata:
-  name: "Samply"
+  name: "Opinio"
   category: "platform"
   tool_category_other_description: ""
-  provider_type: "individual person"
-  provider: "Yury Shevchenko"
-  developer_type: "individual person"
-  developer: "Yury Shevchenko"
-  target_audience: "academic"
-  pricing: "free"
-  website_url: "https://samply.js.org/"
+  provider_type: "commercial company"
+  provider: "Opinio Institute Kft"
+  developer_type: "commercial company"
+  developer: "Opinio Institute Kft"
+  target_audience: "commercial"
+  pricing: ""
+  website_url: "https://opinio.hu/en/"
   documentation_url: ""
-  publication_url: "https://doi.org/10.3758/s13428-020-01527-9"
+  publication_url: ""
   other_url: ""
 technical:
-  source_code_url: "https://github.com/Yury-Shevchenko/samply"
+  source_code_url: ""
   components: 
     - "interface"
     - "app"
   software_components_other_description: ""
   hosting: ""
   server_location: ""
-  license: "permissive open-source"
+  license: "propietary"
   participant_platform: "phone"
   participant_phone_os: 
     - "android"
@@ -31,26 +31,28 @@ technical:
   participant_watch_os: ""
   participant_install_source: "Store"
   is_maintained: true
-  contribution: 
-    - "reporting bugs"
-    - "contributing code"
+  contribution: ""
 data:
   sensor:
     sensorlog_description: ""
     devicelog_description: ""
     usagelog_description: ""
   survey:
-    items: ""
+    items: 
+      - "file uploads"
+      - "free-entry questions"
+      - "multiple-choice questions"
+      - "ranking questions"
+      - "single-choice questions"
     input_validation: ""
     flow: ""
-    media_types: ""
+    media_types: 
+      - "images"
+      - "videos"
 scheduling:
-  schedule_types: "time-based"
-  schedules_time_based_description: 
-    - "at fixed intervals"
-    - "at random intervals"
-    - "other"
-  signal: "via push-notification"
+  schedule_types: ""
+  schedules_time_based_description: ""
+  signal: ""
 other:
   accessibility: ""
   documentation_available: false

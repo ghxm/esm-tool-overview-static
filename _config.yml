@@ -37,7 +37,8 @@ default_empty_value: "-"
 # Tool information sections for detail page
 detail_info_sections:
   - name: "Basic Information"
-    fields: ["metadata.category", "metadata.pricing", "metadata.provider_type", "metadata.provider"]
+    fields: ["metadata.category", "metadata.pricing", "metadata.target_audience", "metadata.provider_type", "metadata.provider",
+            "metadata.developer_type", "metadata.developer"]
   - name: "Technical Details" 
     fields: ["technical.components", "technical.participant_platform", "technical.license"]
   - name: "Data Collection"
@@ -63,6 +64,7 @@ fields:
     display: ["table", "detail_info"]
     sortable: true
     show_if_empty: false
+    titlecase: true
     filter:
       display: true
       type: "select"
@@ -75,6 +77,7 @@ fields:
       
   metadata.provider_type:
     label: "Provider Type"
+    display_style: "badge"
     type: "category"
     display: ["table", "detail_info"]
     sortable: true
@@ -95,14 +98,37 @@ fields:
     sortable: true
     show_if_empty: false
     
+  metadata.developer_type:
+    label: "Developer Type"
+    type: "category"
+    display_style: "badge"
+    display: [ "detail_info" ]
+    sortable: true
+    show_if_empty: false
+    titlecase: true
+    filter:
+      display: true
+      type: "select"
+      label: "Developer Type"
+    popover:
+      title: "Developer Types"
+      content: "• <strong>Academic Research Institution</strong>: Universities and research organizations<br>• <strong>Commercial Company</strong>: For-profit businesses<br>• <strong>Non-Commercial Company</strong>: Non-profit organizations<br>• <strong>Individual Person</strong>: Independent developers or researchers"
+
+  metadata.developer:
+    label: "Developer"
+    type: "string"
+    display_style: "string"
+    display: [ "detail_info" ]
+    sortable: true
+    show_if_empty: false
+    
   metadata.pricing:
     label: "Pricing"
-    type: "array"
     display_style: "badge"
     display: ["table", "detail_info"]
     sortable: true
     show_if_empty: false
-    titlecase: false
+    titlecase: true
     filter:
       display: true
       type: "select"
@@ -113,10 +139,11 @@ fields:
       
   metadata.target_audience:
     label: "Target Use"
-    type: "array"
+    display_style: "badge"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
+    titlecase: true
     popover:
       title: "Target Use Cases"
       content: "• <strong>Academic</strong>: Research and academic studies<br>• <strong>Commercial</strong>: Business and commercial applications<br>• <strong>Clinical</strong>: Healthcare and clinical settings<br>• <strong>Therapy</strong>: Therapeutic interventions and treatment"
@@ -136,7 +163,7 @@ fields:
   # Technical section
   technical.components:
     label: "Components"
-    type: "array"
+    display_style: "badge"
     display: ["table", "detail_info"]
     sortable: false
     show_if_empty: false
@@ -155,10 +182,11 @@ fields:
       
   technical.participant_platform:
     label: "Platform"
-    type: "array"
+    display_style: "badge"
     display: ["table", "detail_info"]
     sortable: false
     show_if_empty: false
+    titlecase: true
     filter:
       display: true
       type: "multiselect-or"
@@ -169,7 +197,7 @@ fields:
       
   technical.participant_phone_os:
     label: "Mobile OS"
-    type: "array"
+    display_style: "badge"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
@@ -198,6 +226,9 @@ fields:
     display: ["detail_info"]
     sortable: true
     show_if_empty: false
+    value_labels:
+      true: "Yes"
+      false: "No"
     filter:
       display: true
       type: "select"
@@ -215,17 +246,16 @@ fields:
   # Data collection
   data.survey.items:
     label: "Survey Items"
-    type: "array"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
+    titlecase: true
     popover:
       title: "Survey Item Types"
       content: "Types of survey questions and input methods supported by the tool"
       
   data.survey.flow:
     label: "Survey Flow"
-    type: "array"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
@@ -235,7 +265,7 @@ fields:
       
   data.survey.media_types:
     label: "Media Types"
-    type: "array"
+    display_style: "badge"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
@@ -245,7 +275,6 @@ fields:
       
   data.sensor.sensorlog_description:
     label: "Sensor Types"
-    type: "array"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
@@ -255,7 +284,6 @@ fields:
       
   data.sensor.devicelog_description:
     label: "Device Logs"
-    type: "array"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
@@ -265,7 +293,6 @@ fields:
       
   data.sensor.usagelog_description:
     label: "Usage Logs"
-    type: "array"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
@@ -276,7 +303,7 @@ fields:
   # Scheduling
   scheduling.schedule_types:
     label: "Schedule Types"
-    type: "array"
+    display_style: "badge"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
@@ -290,7 +317,6 @@ fields:
       
   scheduling.signal:
     label: "Notification Method"
-    type: "array"
     display: ["detail_info"]
     sortable: false
     show_if_empty: false
@@ -309,11 +335,32 @@ fields:
     display: ["detail_info"]
     sortable: true
     show_if_empty: false
+    value_labels:
+      true: "Yes"
+      false: "No"
     filter:
       display: false
       type: "select"
       label: "Documentation"
     popover:
       title: "Documentation Availability"
+      content: "Whether comprehensive documentation is available for researchers and developers"
+    
+
+  other.consultation_available:
+    label: "Consultation"
+    type: "category"
+    display: ["detail_info"]
+    sortable: true
+    show_if_empty: false
+    value_labels:
+      true: "Yes"
+      false: "No"
+    filter:
+      display: false
+      type: "select"
+      label: "Consultation"
+    popover:
+      title: "Consultation Availability"
       content: "Whether comprehensive documentation is available for researchers and developers"
     

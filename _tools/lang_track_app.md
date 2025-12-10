@@ -1,27 +1,27 @@
 ---
 layout: tool
-title: "Samply"
+title: "Lang-Track-App"
 metadata:
-  name: "Samply"
+  name: "Lang-Track-App"
   category: "platform"
   tool_category_other_description: ""
-  provider_type: "individual person"
-  provider: "Yury Shevchenko"
-  developer_type: "individual person"
-  developer: "Yury Shevchenko"
+  provider_type: "academic research institution"
+  provider: "Lund University"
+  developer_type: "academic research institution"
+  developer: "Lund University"
   target_audience: "academic"
   pricing: "free"
-  website_url: "https://samply.js.org/"
+  website_url: ""
   documentation_url: ""
-  publication_url: "https://doi.org/10.3758/s13428-020-01527-9"
+  publication_url: "https://doi.org/10.1111/lang.12555"
   other_url: ""
 technical:
-  source_code_url: "https://github.com/Yury-Shevchenko/samply"
+  source_code_url: "https://github.com/HumlabLu"
   components: 
     - "interface"
     - "app"
   software_components_other_description: ""
-  hosting: ""
+  hosting: "on premise"
   server_location: ""
   license: "permissive open-source"
   participant_platform: "phone"
@@ -30,29 +30,31 @@ technical:
     - "ios"
   participant_watch_os: ""
   participant_install_source: "Store"
-  is_maintained: true
-  contribution: 
-    - "reporting bugs"
-    - "contributing code"
+  is_maintained: false
+  contribution: ""
 data:
   sensor:
     sensorlog_description: ""
     devicelog_description: ""
     usagelog_description: ""
   survey:
-    items: ""
+    items: 
+      - "free-entry questions"
+      - "likert scales"
+      - "multiple-choice questions"
+      - "single-choice questions"
+      - "sliders"
     input_validation: ""
-    flow: ""
+    flow: "skip logic"
     media_types: ""
 scheduling:
   schedule_types: "time-based"
   schedules_time_based_description: 
     - "at fixed intervals"
-    - "at random intervals"
     - "other"
   signal: "via push-notification"
 other:
   accessibility: ""
-  documentation_available: false
+  documentation_available: true
   consultation_available: false
 ---

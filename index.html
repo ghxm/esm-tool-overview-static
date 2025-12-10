@@ -63,15 +63,15 @@ title: "Tool Overview"
                                     {% for tool in site.tools %}
                                         {% assign page = tool %}
                                         {% include get_field_value.html field_name=field_name %}
-                                        {% if field_value and field_value != "" %}
+                                        {% unless field_value_for_comparison == nil or field_value_for_comparison == "" %}
                                             {% assign field_values = field_values | push: field_value %}
-                                        {% endif %}
+                                        {% endunless %}
                                     {% endfor %}
                                     {% assign field_values = field_values | uniq | sort %}
                                     {% for value in field_values %}
-                                        {% if value and value != "" %}
+                                        {% unless value == nil or value == false or value == "" %}
                                             <option value="{{ value }}">{{ value }}</option>
-                                        {% endif %}
+                                        {% endunless %}
                                     {% endfor %}
                                 </select>
                             </div>
@@ -191,21 +191,46 @@ title: "Tool Overview"
                                             {% assign page = tool %}
                                             {% include get_field_value.html field_name=field_name %}
                                             {% assign value = field_value %}
-                                            {% if field_config.type == 'array' and value and value.size > 0 %}
-                                                {% assign transformed_values = "" | split: "," %}
-                                                {% for item in value %}
+                                            {% if value and value.first %}
+                                                {% assign display_style = field_config.display_style | default: "string" %}
+                                                {% if display_style == 'string' %}
+                                                    {% comment %} Display as comma-separated string {% endcomment %}
+                                                    {% assign display_items = '' %}
+                                                    {% for item in value %}
+                                                        {% include apply_value_label.html value=item field_config=field_config %}
+                                                        {% if forloop.first %}
+                                                            {% assign display_items = display_value %}
+                                                        {% else %}
+                                                            {% assign display_items = display_items | append: ', ' | append: display_value %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {{ display_items }}
+                                                {% else %}
+                                                    {% comment %} Display as badges (default) {% endcomment %}
+                                                    {% for item in value %}
                                                     {% include apply_value_label.html value=item field_config=field_config %}
-                                                    {% assign transformed_values = transformed_values | push: display_value %}
-                                                {% endfor %}
-                                                {{ transformed_values | join: ", " }}
+                                                    {% assign display_item = display_value %}
+                                                    
+                                                    {% comment %} Get consistent color for this item {% endcomment %}
+                                                    {% assign base_badge_color = field_config.badge_color | default: "primary" %}
+                                                    {% include get_consistent_badge_color.html value=item base_color=base_badge_color %}
+                                                    {% assign item_color = consistent_color %}
+                                                    
+                                                    <span class="badge bg-{{ item_color }} me-1">{{ display_item }}</span>
+                                                    {% endfor %}
+                                                {% endif %}
                                             {% elsif field_name == 'name' and value %}
                                                 <strong>{{ value }}</strong>
-                                            {% elsif field_config.display_style == 'badge' and value %}
-                                                {% include apply_value_label.html value=value field_config=field_config %}
-                                                <span class="badge bg-primary">{{ display_value }}</span>
                                             {% elsif value %}
-                                                {% include apply_value_label.html value=value field_config=field_config %}
-                                                {{ display_value }}
+                                                {% assign display_style = field_config.display_style | default: "string" %}
+                                                {% if display_style == 'badge' %}
+                                                    {% include apply_value_label.html value=value field_config=field_config %}
+                                                    {% assign badge_color = field_config.badge_color | default: "primary" %}
+                                                    <span class="badge bg-{{ badge_color }}">{{ display_value }}</span>
+                                                {% else %}
+                                                    {% include apply_value_label.html value=value field_config=field_config %}
+                                                    {{ display_value }}
+                                                {% endif %}
                                             {% elsif field_config.show_if_empty %}
                                                 <span class="text-muted">{% if field_config.empty_value %}{{ field_config.empty_value }}{% else %}{{ site.default_empty_value }}{% endif %}</span>
                                             {% else %}

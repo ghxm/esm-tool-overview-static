@@ -367,17 +367,17 @@ def apply_transformations(row: Dict[str, str], na_values: set = None) -> Dict[st
     # 22. Updates: no other, rename to is_maintained
     updates = cleaned.get('updates', '')
     if updates and updates not in na_values and 'continuous' in updates.lower():
-        cleaned['is_maintained'] = 'Yes'
+        cleaned['is_maintained'] = 'true'
     else:
-        cleaned['is_maintained'] = 'No'
+        cleaned['is_maintained'] = 'false'
     to_delete.extend(['updates', 'updates_other'])
     
     # 23. Special guidance: no other, consultation yes/no
     guidance = cleaned.get('special_guidance', '')
     if guidance and guidance not in na_values and 'consultation' in guidance.lower():
-        cleaned['consultation'] = 'Yes'
+        cleaned['consultation'] = 'true'
     else:
-        cleaned['consultation'] = 'No'
+        cleaned['consultation'] = 'false'
     to_delete.extend(['special_guidance', 'special_guidance_other'])
     
     # 24. Contribution: no other

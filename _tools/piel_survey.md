@@ -1,29 +1,31 @@
 ---
 layout: tool
-title: "Samply"
+title: "PIEL Survey"
 metadata:
-  name: "Samply"
+  name: "PIEL Survey"
   category: "platform"
   tool_category_other_description: ""
-  provider_type: "individual person"
-  provider: "Yury Shevchenko"
-  developer_type: "individual person"
-  developer: "Yury Shevchenko"
-  target_audience: "academic"
-  pricing: "free"
-  website_url: "https://samply.js.org/"
+  provider_type: "commercial company"
+  provider: "Blue Jay Ventures"
+  developer_type: "commercial company"
+  developer: "Blue Jay Ventures"
+  target_audience: 
+    - "academic"
+    - "commercial"
+  pricing: ""
+  website_url: "https://pielsurvey.org/"
   documentation_url: ""
-  publication_url: "https://doi.org/10.3758/s13428-020-01527-9"
+  publication_url: "https://doi.org/10.1177/15459683241230027"
   other_url: ""
 technical:
-  source_code_url: "https://github.com/Yury-Shevchenko/samply"
+  source_code_url: ""
   components: 
     - "interface"
     - "app"
   software_components_other_description: ""
   hosting: ""
   server_location: ""
-  license: "permissive open-source"
+  license: "propietary"
   participant_platform: "phone"
   participant_phone_os: 
     - "android"
@@ -31,16 +33,19 @@ technical:
   participant_watch_os: ""
   participant_install_source: "Store"
   is_maintained: true
-  contribution: 
-    - "reporting bugs"
-    - "contributing code"
+  contribution: ""
 data:
   sensor:
     sensorlog_description: ""
     devicelog_description: ""
     usagelog_description: ""
   survey:
-    items: ""
+    items: 
+      - "free-entry questions"
+      - "list"
+      - "multiple-choice questions"
+      - "single-choice questions"
+      - "sliders"
     input_validation: ""
     flow: ""
     media_types: ""
@@ -48,11 +53,10 @@ scheduling:
   schedule_types: "time-based"
   schedules_time_based_description: 
     - "at fixed intervals"
-    - "at random intervals"
-    - "other"
+    - "on registration"
   signal: "via push-notification"
 other:
   accessibility: ""
-  documentation_available: false
+  documentation_available: true
   consultation_available: false
 ---
