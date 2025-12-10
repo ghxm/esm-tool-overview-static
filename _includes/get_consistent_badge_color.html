@@ -1,0 +1,57 @@
+{%- comment -%}Generate consistent badge color based on value and base color{%- endcomment -%}
+{%- assign base_color = include.base_color | default: "primary" -%}
+{%- assign value = include.value | downcase | strip -%}
+
+{%- comment -%}Better hash using multiple character positions{%- endcomment -%}
+{%- assign value_length = value | size -%}
+{%- assign char1 = value | slice: 0, 1 -%}
+{%- assign char2 = value | slice: 1, 1 -%}
+{%- assign char3 = value | slice: 2, 1 -%}
+{%- assign last_char = value | slice: -1, 1 -%}
+
+{%- comment -%}Convert characters to numbers{%- endcomment -%}
+{%- assign alphabet = "abcdefghijklmnopqrstuvwxyz" -%}
+{%- assign numbers = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26" | split: "," -%}
+
+{%- assign hash = value_length -%}
+
+{%- comment -%}Add position-weighted character values{%- endcomment -%}
+{%- for i in (0..25) -%}
+  {%- assign letter = alphabet | slice: i, 1 -%}
+  {%- assign num = numbers[i] -%}
+  
+  {%- if char1 == letter -%}
+    {%- assign hash = hash | plus: num | times: 3 -%}
+  {%- endif -%}
+  {%- if char2 == letter -%}
+    {%- assign hash = hash | plus: num | times: 2 -%}
+  {%- endif -%}
+  {%- if char3 == letter -%}
+    {%- assign hash = hash | plus: num -%}
+  {%- endif -%}
+  {%- if last_char == letter -%}
+    {%- assign hash = hash | plus: num | times: 5 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign color_index = hash | modulo: 6 -%}
+
+{%- comment -%}Define more diverse color variants for each base color{%- endcomment -%}
+{%- case base_color -%}
+  {%- when 'primary' -%}
+    {%- assign colors = 'primary,info,success,warning,secondary,danger' | split: ',' -%}
+  {%- when 'success' -%}
+    {%- assign colors = 'success,primary,info,success,primary,info' | split: ',' -%}
+  {%- when 'info' -%}
+    {%- assign colors = 'info,primary,secondary,info,primary,secondary' | split: ',' -%}
+  {%- when 'warning' -%}
+    {%- assign colors = 'warning,danger,secondary,warning,danger,secondary' | split: ',' -%}
+  {%- when 'danger' -%}
+    {%- assign colors = 'danger,warning,secondary,danger,warning,secondary' | split: ',' -%}
+  {%- when 'secondary' -%}
+    {%- assign colors = 'secondary,dark,primary,secondary,dark,primary' | split: ',' -%}
+  {%- else -%}
+    {%- assign colors = 'primary,info,success,warning,danger,secondary' | split: ',' -%}
+{%- endcase -%}
+
+{%- assign consistent_color = colors[color_index] -%}
