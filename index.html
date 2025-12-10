@@ -61,12 +61,13 @@ title: "Tool Overview"
                                     <option value="">All {% if field_config.filter.label %}{{ field_config.filter.label }}{% else %}{{ field_config.label }}{% endif %}</option>
                                     {% assign field_values = "" | split: "," %}
                                     {% for tool in site.tools %}
-                                        {% assign page = tool %}
-                                        {% include get_field_value.html field_name=field_name %}
-                                        {% assign debug_value = field_value | inspect %}
-                                        {% comment %}DEBUG: {{ field_name }}: {{ debug_value }}{% endcomment %}
-                                        {% unless field_value == nil or field_value == "" %}
-                                            {% assign field_values = field_values | push: field_value %}
+                                        {% assign field_parts = field_name | split: "." %}
+                                        {% assign tool_field_value = tool %}
+                                        {% for part in field_parts %}
+                                            {% assign tool_field_value = tool_field_value[part] %}
+                                        {% endfor %}
+                                        {% unless tool_field_value == nil or tool_field_value == "" %}
+                                            {% assign field_values = field_values | push: tool_field_value %}
                                         {% endunless %}
                                     {% endfor %}
                                     {% assign field_values = field_values | uniq | sort %}
@@ -447,8 +448,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 var match = false;
                 
                 if (filter.type === 'select') {
-                    // Exact match for single-value fields
-                    match = rawValue === filter.values[0].trim();
+                    // Check if the filter value exists in the comma-separated list
+                    var filterValue = filter.values[0].trim();
+                    if (rawValue.includes(',')) {
+                        // Multiple values - check if filter value is in the list
+                        match = itemValues.includes(filterValue);
+                    } else {
+                        // Single value - exact match
+                        match = rawValue === filterValue;
+                    }
                 } else if (filter.type === 'multiselect-or') {
                     // OR logic: Check if ANY of the selected values exist in the item
                     match = filter.values.some(function(filterValue) {
