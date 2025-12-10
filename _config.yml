@@ -42,7 +42,8 @@ detail_info_sections:
   - name: "Technical Details" 
     fields: ["technical.components", "technical.participant_platform", "technical.license"]
   - name: "Data Collection"
-    fields: ["data.survey.items", "data.sensor.sensorlog_description", "scheduling.schedule_types"]
+    fields: ["data.survey.items", "data.sensor.sensorlog_description", "scheduling.schedule_types",
+    "scheduling.signal"]
 
 
 # Unified field configuration

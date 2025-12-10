@@ -233,6 +233,7 @@ title: "Tool Overview"
                                                     {% assign badge_color = field_config.badge_color | default: "primary" %}
                                                     <span class="badge bg-{{ badge_color }}">{{ display_value }}</span>
                                                 {% else %}
+                                                    {% comment %} string or list display style - both show as text in table {% endcomment %}
                                                     {% include apply_value_label.html value=value field_config=field_config %}
                                                     {{ display_value }}
                                                 {% endif %}

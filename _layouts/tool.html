@@ -268,12 +268,8 @@ layout: default
                                         {% assign badge_color = field_config.badge_color | default: "primary" %}
                                         {% include apply_value_label.html value=value field_config=field_config %}
                                         <span class="badge bg-{{ badge_color }}">{{ display_value }}</span>
-                                    {% elsif field_config.display_style == 'list' and value %}
-                                        {% include apply_value_label.html value=value field_config=field_config %}
-                                        <ul class="mb-0">
-                                            <li>{{ display_value }}</li>
-                                        </ul>
                                     {% elsif value %}
+                                        {% comment %} Single values display as text even with list style {% endcomment %}
                                         {% include apply_value_label.html value=value field_config=field_config %}
                                         {{ display_value }}
                                     {% elsif field_config.show_if_empty %}
@@ -382,12 +378,8 @@ layout: default
                                         {% assign badge_color = field_config.badge_color | default: "primary" %}
                                         {% include apply_value_label.html value=value field_config=field_config %}
                                         <span class="badge bg-{{ badge_color }}">{{ display_value }}</span>
-                                    {% elsif field_config.display_style == 'list' and value %}
-                                        {% include apply_value_label.html value=value field_config=field_config %}
-                                        <ul class="mb-0">
-                                            <li>{{ display_value }}</li>
-                                        </ul>
                                     {% elsif value %}
+                                        {% comment %} Single values display as text even with list style {% endcomment %}
                                         {% include apply_value_label.html value=value field_config=field_config %}
                                         {{ display_value }}
                                     {% elsif field_config.show_if_empty %}
