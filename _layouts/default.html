@@ -32,7 +32,7 @@
                     <p class="mb-0">{{ 'now' | date: '%Y' }} {{ site.title }}.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p class="mb-0">{{ site.description }}</p>
+                    <p class="mb-0">{{ site.footer_text | default: site.description }}</p>
                 </div>
             </div>
         </div>

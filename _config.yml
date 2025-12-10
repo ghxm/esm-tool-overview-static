@@ -1,6 +1,8 @@
 # Site settings
 title: "EMAtrix"
-description: "A community-based collection of tools for mobile ecological momentary assessments and sensing."
+description: "EMAtrix is a community-based collection of tools for mobile ecological momentary assessments and sensing to aid researchers find the right tools for their studies."
+index_lead_text: "A community-based collection of tools for mobile ecological momentary assessments and sensing"
+footer_text: "GESIS - Leibniz Institute for the Social Sciences"
 baseurl: "/esm-tool-overview-static"
 url: "https://ghxm.github.io"
 
